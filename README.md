@@ -85,3 +85,21 @@ if(success){
 } else if(failure) {
   **通常打刻：打刻しました**とメッセージを表示する
 }
+## ディレクトリ構成
+
+```
+(root)
+├─ sqlite-tools-linux-x86-3410200/
+└─ src
+   ├─ NyokiNyokiPirorin.java
+   ├─ User/
+   │  ├─ User.java
+   │  ├─ TimeTableDAO.java
+   │  └─ TimeTable.java
+   ├─ TimeCard/
+   │  ├─ TimestampDAO.java
+   │  └─ TimeCard.java
+   └─ Course/
+      ├─ Course.java
+      └─ CourseDAO.java
+```
