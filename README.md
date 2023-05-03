@@ -66,22 +66,47 @@
 
 ## 履修登録
 
-NyokiNyokiPirorin mainメソッドを実行する;
+```
+NyokiNyokiPirorin main メソッドを実行する;
 **履修登録をする**を選ぶ;
 講義の id (時間割番号）を指定して履修登録（このあとに時間割表を確認したい）;
+
 if 時間割がかぶった場合 {
   throw new Error("");
 }
 if 履修登録消去の場合 {
     履修登録;
 } 
+```
 
 ## 打刻
 
-NyokiNyokiPirorin mainメソッドを実行する
-**打刻をする**を選ぶ（システムが打刻時間をTimestamp DBに登録する）
+```
+NyokiNyokiPirorin main メソッドを実行する
+**打刻をする**を選ぶ（システムが打刻時間を Timestamp DB に登録する）
+
 if(success){
   **授業打刻：〇〇の授業に打刻しました**とメッセージを表示する
 } else if(failure) {
   **通常打刻：打刻しました**とメッセージを表示する
 }
+```
+
+## ディレクトリ構成
+
+```
+(root)
+├─ sqlite-tools-linux-x86-3410200/
+└─ src
+   ├─ NyokiNyokiPirorin.java
+   ├─ User/
+   │  ├─ User.java
+   │  ├─ TimeTableDAO.java
+   │  └─ TimeTable.java
+   ├─ TimeCard/
+   │  ├─ TimestampDAO.java
+   │  └─ TimeCard.java
+   └─ Course/
+      ├─ Course.java
+      └─ CourseDAO.java
+```
