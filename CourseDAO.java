@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class CourseDAO {
     private final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
+    private final TimeSlotDAO timeSlotDAO;
 
     static {
         try {
@@ -17,8 +18,10 @@ public class CourseDAO {
     }
 
     public CourseDAO() {
-        String sql = "CREATE TABLE IF NOT EXISTS courses (" + "courseId INTEGER PRIMARY KEY,"
-                + "courseName TEXT NOT NULL," + "dayOfWeek INTEGER NOT NULL," + "classPeriod INTEGER NOT NULL" + ");";
+        timeSlotDAO = new TimeSlotDAO();
+
+        String sql = "CREATE TABLE IF NOT EXISTS courses (" + "id INTEGER PRIMARY KEY," + "courseName TEXT NOT NULL"
+                + ");";
 
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
@@ -27,36 +30,18 @@ public class CourseDAO {
         }
     }
 
-    public boolean addCourse(Course course) {
-        String sql = "INSERT INTO courses (courseId, courseName, dayOfWeek, classPeriod) VALUES (?, ?, ?, ?);";
+    public Course getCourse(int id) {
+        String sql = "SELECT * FROM courses WHERE id = ?;";
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setInt(1, course.getCourseId());
-            statement.setString(2, course.getCourseName());
-            statement.setInt(3, course.getDayOfWeek());
-            statement.setInt(4, course.getClassPeriod());
-
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to add course", e);
-        }
-    }
-
-    public Course getCourse(int courseId) {
-        String sql = "SELECT * FROM courses WHERE courseId = ?;";
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setInt(1, courseId);
+            statement.setInt(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     String courseName = resultSet.getString("courseName");
-                    int dayOfWeek = resultSet.getInt("dayOfWeek");
-                    int classPeriod = resultSet.getInt("classPeriod");
 
-                    return new Course(courseId, courseName, dayOfWeek, classPeriod);
+                    return new Course(id, courseName);
                 } else {
                     return null;
                 }
@@ -66,57 +51,18 @@ public class CourseDAO {
         }
     }
 
-    public List<Course> getCourses(int dayOfWeek, int classPeriod) {
-        String sql = "SELECT * FROM courses WHERE dayOfWeek = ? AND classPeriod = ?;";
+    public List<Course> getCoursesByTimeSlot(int dayOfWeek, int beginPeriod) {
+        List<TimeSlot> timeSlots = timeSlotDAO.getTimeSlotsByDayAndBeginPeriod(dayOfWeek, beginPeriod);
+        List<Course> courses = new ArrayList<>();
 
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setInt(1, dayOfWeek);
-            statement.setInt(2, classPeriod);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                List<Course> courses = new ArrayList<>();
-                while (resultSet.next()) {
-                    int resultCourseId = resultSet.getInt("courseId");
-                    String courseName = resultSet.getString("courseName");
-
-                    Course course = new Course(resultCourseId, courseName, dayOfWeek, classPeriod);
-                    courses.add(course);
-                }
-                return courses;
+        for (TimeSlot timeSlot : timeSlots) {
+            Course course = getCourse(timeSlot.getCourseId());
+            if (course != null) {
+                courses.add(course);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to get courses", e);
         }
-    }
 
-    public boolean updateCourse(Course course) {
-        String sql = "UPDATE courses SET courseName = ?, dayOfWeek = ?, classPeriod = ? WHERE courseId = ?;";
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, course.getCourseName());
-            statement.setInt(2, course.getDayOfWeek());
-            statement.setInt(3, course.getClassPeriod());
-            statement.setInt(4, course.getCourseId());
-
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to update course", e);
-        }
-    }
-
-    public boolean deleteCourse(int courseId) {
-        String sql = "DELETE FROM courses WHERE courseId = ?;";
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setInt(1, courseId);
-
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to delete course", e);
-        }
+        return courses;
     }
 
 }

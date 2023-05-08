@@ -1,35 +1,40 @@
-public class Course {
-    private final int courseId;
-    private final String courseName;
-    private final int dayOfWeek;
-    private final int classPeriod;
+import java.util.*;
 
-    public Course(int courseId, String courseName, int dayOfWeek, int classPeriod) {
-        this.courseId = courseId;
+public class Course {
+    private final int id;
+    private final String courseName;
+
+    public Course(int id, String courseName) {
+        this.id = id;
         this.courseName = courseName;
-        this.dayOfWeek = dayOfWeek;
-        this.classPeriod = classPeriod;
     }
 
-    public int getCourseId() {
-        return courseId;
+    public int getId() {
+        return id;
     }
 
     public String getCourseName() {
         return courseName;
     }
 
-    public int getDayOfWeek() {
-        return dayOfWeek;
-    }
+    public boolean isConflict(Course other) {
+        TimeSlotDAO timeSlotDAO = new TimeSlotDAO();
+        List<TimeSlot> timeSlots = timeSlotDAO.getTimeSlotsByCourseId(id);
+        List<TimeSlot> otherTimeSlots = timeSlotDAO.getTimeSlotsByCourseId(other.id);
 
-    public int getClassPeriod() {
-        return classPeriod;
+        for (TimeSlot timeSlot : timeSlots) {
+            for (TimeSlot otherTimeSlot : otherTimeSlots) {
+                if (timeSlot.isConflict(otherTimeSlot)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
     public String toString() {
-        return "Course{" + "id=" + courseId + ", name=" + courseName + ", dayOfWeek=" + dayOfWeek + ", classPriod="
-                + classPeriod + '}';
+        return "Course{" + "id=" + id + ", courseName='" + courseName + '\'' + '}';
     }
 }
