@@ -3,6 +3,10 @@ import java.util.*;
 public class TimeTable {
     private final List<Course> courses;
 
+    public TimeTable() {
+        this.courses = new ArrayList<>();
+    }
+
     public TimeTable(List<Course> courses) {
         this.courses = courses;
     }
