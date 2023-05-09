@@ -1,8 +1,10 @@
 import java.util.List;
 
 public class TimeTableIntegrationTest {
+
+    private static TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
+
     public static void main(String[] args) {
-        TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
         while (true) {
             System.out.println("1. Show registered courses");
             System.out.println("2. Add course");
@@ -16,40 +18,60 @@ public class TimeTableIntegrationTest {
 
             switch (choice) {
             case 1:
-                System.out.println("Registered courses:");
-                System.out.println(timeTable);
+                showRegisteredCourses();
                 break;
             case 2:
-                System.out.print("Enter course id: ");
-                int id = Integer.parseInt(System.console().readLine());
-                timeTable.addCourse(id);
+                addCourse();
                 break;
             case 3:
-                System.out.print("Enter course id: ");
-                id = Integer.parseInt(System.console().readLine());
-                timeTable.removeCourse(id);
+                removeCourse();
                 break;
             case 4:
-                courses = timeTable.getAvailableCourses();
-                for (Course c : courses) {
-                    System.out.println(c);
-                }
+                getAvailableCourses();
                 break;
             case 5:
-                System.out.print("Enter course day of week: ");
-                int dayOfWeek = Integer.parseInt(System.console().readLine());
-                System.out.print("Enter course begin period: ");
-                int beginPeriod = Integer.parseInt(System.console().readLine());
-                courses = timeTable.getAvailableCoursesByTimeSlot(dayOfWeek, beginPeriod);
-                for (Course c : courses) {
-                    System.out.println(c);
-                }
+                getAvailableCoursesByTimeSlot();
                 break;
             case 6:
                 System.exit(0);
             default:
                 System.out.println("Invalid choice");
             }
+        }
+    }
+
+    private static void showRegisteredCourses() {
+        System.out.println("Registered courses:");
+        System.out.println(timeTable);
+    }
+
+    private static void addCourse() {
+        System.out.print("Enter course id: ");
+        int id = Integer.parseInt(System.console().readLine());
+        timeTable.addCourse(id);
+    }
+
+    private static void removeCourse() {
+        System.out.print("Enter course id: ");
+        int id = Integer.parseInt(System.console().readLine());
+        timeTable.removeCourse(id);
+    }
+
+    private static void getAvailableCourses() {
+        List<Course> courses = timeTable.getAvailableCourses();
+        for (Course c : courses) {
+            System.out.println(c);
+        }
+    }
+
+    private static void getAvailableCoursesByTimeSlot() {
+        System.out.print("Enter course day of week: ");
+        int dayOfWeek = Integer.parseInt(System.console().readLine());
+        System.out.print("Enter course begin period: ");
+        int beginPeriod = Integer.parseInt(System.console().readLine());
+        List<Course> courses = timeTable.getAvailableCoursesByTimeSlot(dayOfWeek, beginPeriod);
+        for (Course c : courses) {
+            System.out.println(c);
         }
     }
 }

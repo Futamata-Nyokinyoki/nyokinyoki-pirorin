@@ -47,6 +47,6 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" + "id=" + id + ", courseName='" + courseName + "\', timeSlots=" + timeSlots + '}';
+        return "Course{" + "id=" + id + ", courseName='" + courseName + "', timeSlots=" + timeSlots + '}';
     }
 }
