@@ -13,14 +13,14 @@ public class TimeSlotDAO {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url);
     }
 
     public TimeSlotDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS time_slots (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "courseId INTEGER NOT NULL," + "dayOfWeek INTEGER NOT NULL," + "beginPeriod INTEGER NOT NULL,"
-                + "endPeriod INTEGER NOT NULL," + "FOREIGN KEY(courseId) REFERENCES courses(id)" + ");";
+                + "endPeriod INTEGER NOT NULL," + "FOREIGN KEY(id) REFERENCES courses(courseId)" + ");";
 
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);

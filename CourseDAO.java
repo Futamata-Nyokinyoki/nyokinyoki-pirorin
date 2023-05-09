@@ -1,5 +1,6 @@
 import java.util.*;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class CourseDAO {
     private final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
@@ -13,7 +14,7 @@ public class CourseDAO {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url);
     }
 
@@ -51,18 +52,32 @@ public class CourseDAO {
         }
     }
 
+    public List<Course> getCourses() {
+        String sql = "SELECT * FROM courses;";
+
+        try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
+
+            List<Course> courses = new ArrayList<>();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String courseName = resultSet.getString("courseName");
+
+                courses.add(new Course(id, courseName));
+            }
+
+            return courses;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get courses", e);
+        }
+    }
+
     public List<Course> getCoursesByTimeSlot(int dayOfWeek, int beginPeriod) {
         List<TimeSlot> timeSlots = timeSlotDAO.getTimeSlotsByDayAndBeginPeriod(dayOfWeek, beginPeriod);
-        List<Course> courses = new ArrayList<>();
 
-        for (TimeSlot timeSlot : timeSlots) {
-            Course course = getCourse(timeSlot.getCourseId());
-            if (course != null) {
-                courses.add(course);
-            }
-        }
-
-        return courses;
+        return timeSlots.stream().map(timeSlot -> getCourse(timeSlot.getCourseId())).filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
 }

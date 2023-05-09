@@ -3,10 +3,12 @@ import java.util.*;
 public class Course {
     private final int id;
     private final String courseName;
+    private final TimeSlotDAO timeSlotDAO;
 
     public Course(int id, String courseName) {
         this.id = id;
         this.courseName = courseName;
+        this.timeSlotDAO = new TimeSlotDAO();
     }
 
     public int getId() {
@@ -17,20 +19,30 @@ public class Course {
         return courseName;
     }
 
+    public List<TimeSlot> getTimeSlots() {
+        return timeSlotDAO.getTimeSlotsByCourseId(id);
+    }
+
     public boolean isConflict(Course other) {
-        TimeSlotDAO timeSlotDAO = new TimeSlotDAO();
-        List<TimeSlot> timeSlots = timeSlotDAO.getTimeSlotsByCourseId(id);
-        List<TimeSlot> otherTimeSlots = timeSlotDAO.getTimeSlotsByCourseId(other.id);
+        List<TimeSlot> timeSlots = this.getTimeSlots();
+        List<TimeSlot> otherTimeSlots = other.getTimeSlots();
 
-        for (TimeSlot timeSlot : timeSlots) {
-            for (TimeSlot otherTimeSlot : otherTimeSlots) {
-                if (timeSlot.isConflict(otherTimeSlot)) {
-                    return true;
-                }
-            }
+        return timeSlots.stream().anyMatch(ts1 -> otherTimeSlots.stream().anyMatch(ts2 -> ts1.isConflict(ts2)));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Course) {
+            Course other = (Course) obj;
+            return id == other.id;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     @Override
