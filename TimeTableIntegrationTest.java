@@ -2,7 +2,7 @@ import java.util.List;
 
 public class TimeTableIntegrationTest {
     public static void main(String[] args) {
-        TimeTable timeTable = new TimeTable();
+        TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
         while (true) {
             System.out.println("1. Show registered courses");
             System.out.println("2. Add course");

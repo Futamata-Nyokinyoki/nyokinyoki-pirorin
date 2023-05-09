@@ -1,6 +1,6 @@
 import java.util.*;
-import java.sql.*;
 import java.util.stream.Collectors;
+import java.sql.*;
 
 public class CourseDAO extends AbstractDAO<Course> {
     private final TimeSlotDAO timeSlotDAO;
@@ -25,7 +25,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 int id = resultSet.getInt("id");
                 String courseName = resultSet.getString("courseName");
 
-                courses.add(new Course(id, courseName));
+                courses.add(new Course(id, courseName, timeSlotDAO));
             }
 
             return courses;
@@ -72,7 +72,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 if (resultSet.next()) {
                     String courseName = resultSet.getString("courseName");
 
-                    return new Course(id, courseName);
+                    return new Course(id, courseName, timeSlotDAO);
                 } else {
                     return null;
                 }

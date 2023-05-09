@@ -3,12 +3,12 @@ import java.util.*;
 public class Course {
     private final int id;
     private final String courseName;
-    private final TimeSlotDAO timeSlotDAO;
+    private final List<TimeSlot> timeSlots;
 
-    public Course(int id, String courseName) {
+    public Course(int id, String courseName, TimeSlotDAO timeSlotDAO) {
         this.id = id;
         this.courseName = courseName;
-        this.timeSlotDAO = new TimeSlotDAO();
+        this.timeSlots = timeSlotDAO.getByCourseId(id);
     }
 
     public int getId() {
@@ -20,14 +20,14 @@ public class Course {
     }
 
     public List<TimeSlot> getTimeSlots() {
-        return timeSlotDAO.getByCourseId(id);
+        return timeSlots;
     }
 
-    public boolean isConflict(Course other) {
+    public boolean overlapsWith(Course other) {
         List<TimeSlot> timeSlots = this.getTimeSlots();
         List<TimeSlot> otherTimeSlots = other.getTimeSlots();
 
-        return timeSlots.stream().anyMatch(ts1 -> otherTimeSlots.stream().anyMatch(ts2 -> ts1.isConflict(ts2)));
+        return timeSlots.stream().anyMatch(ts1 -> otherTimeSlots.stream().anyMatch(ts2 -> ts1.overlapsWith(ts2)));
     }
 
     @Override

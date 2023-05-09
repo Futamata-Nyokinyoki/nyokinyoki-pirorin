@@ -6,6 +6,10 @@ public class TimeSlot {
     private final int endPeriod;
 
     public TimeSlot(int id, int courseId, int dayOfWeek, int beginPeriod, int endPeriod) {
+        if (endPeriod < beginPeriod) {
+            throw new IllegalArgumentException("End period must be greater than or equal to begin period.");
+        }
+
         this.id = id;
         this.courseId = courseId;
         this.dayOfWeek = dayOfWeek;
@@ -37,28 +41,12 @@ public class TimeSlot {
         return endPeriod - beginPeriod + 1;
     }
 
-    public boolean isConflict(TimeSlot other) {
+    public boolean overlapsWith(TimeSlot other) {
         if (dayOfWeek != other.dayOfWeek) {
             return false;
         }
 
-        if (beginPeriod <= other.beginPeriod && other.beginPeriod <= endPeriod) {
-            return true;
-        }
-
-        if (beginPeriod <= other.endPeriod && other.endPeriod <= endPeriod) {
-            return true;
-        }
-
-        if (other.beginPeriod <= beginPeriod && beginPeriod <= other.endPeriod) {
-            return true;
-        }
-
-        if (other.beginPeriod <= endPeriod && endPeriod <= other.endPeriod) {
-            return true;
-        }
-
-        return false;
+        return beginPeriod <= other.endPeriod && other.beginPeriod <= endPeriod;
     }
 
     @Override

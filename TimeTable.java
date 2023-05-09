@@ -1,13 +1,14 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TimeTable {
     private final List<Course> courses;
     private final TimeTableDAO timeTableDAO;
     private final CourseDAO courseDAO;
 
-    public TimeTable() {
-        this.timeTableDAO = new TimeTableDAO();
-        this.courseDAO = new CourseDAO();
+    public TimeTable(TimeTableDAO timeTableDAO, CourseDAO courseDAO) {
+        this.timeTableDAO = timeTableDAO;
+        this.courseDAO = courseDAO;
         this.courses = timeTableDAO.getAll();
     }
 
@@ -16,10 +17,6 @@ public class TimeTable {
     }
 
     public void addCourse(Course course) {
-        if (course == null) {
-            throw new IllegalArgumentException("Course does not exist");
-        }
-
         if (!this.isAvailable(course)) {
             throw new IllegalArgumentException("Course is not available");
         }
@@ -29,71 +26,34 @@ public class TimeTable {
     }
 
     public void addCourse(int id) {
-        Course course = courseDAO.getById(id);
-        this.addCourse(course);
+        addCourse(courseDAO.getById(id));
     }
 
     public void removeCourse(Course course) {
-        if (course == null) {
-            throw new IllegalArgumentException("Course does not exist");
-        }
         timeTableDAO.remove(course.getId());
         courses.removeIf(c -> c.equals(course));
     }
 
     public void removeCourse(int id) {
-        Course course = courseDAO.getById(id);
-        this.removeCourse(course);
+        removeCourse(courseDAO.getById(id));
     }
 
     public List<Course> getAvailableCourses() {
-        List<Course> courses = courseDAO.getAll();
-        List<Course> availableCourses = new ArrayList<>();
-
-        for (Course course : courses) {
-            if (this.isAvailable(course)) {
-                availableCourses.add(course);
-            }
-        }
-
-        return availableCourses;
+        return courseDAO.getAll().stream().filter(this::isAvailable).collect(Collectors.toList());
     }
 
     public List<Course> getAvailableCoursesByTimeSlot(int dayOfWeek, int beginPeriod) {
-        List<Course> courses = courseDAO.getByTimeSlot(dayOfWeek, beginPeriod);
-        List<Course> availableCourses = new ArrayList<>();
-
-        for (Course course : courses) {
-            if (this.isAvailable(course)) {
-                availableCourses.add(course);
-            }
-        }
-
-        return availableCourses;
+        return courseDAO.getByTimeSlot(dayOfWeek, beginPeriod).stream().filter(this::isAvailable)
+                .collect(Collectors.toList());
     }
 
     public boolean isAvailable(Course course) {
-        for (Course existingCourse : courses) {
-            if (existingCourse.equals(course)) {
-                return false;
-            }
-
-            if (existingCourse.isConflict(course)) {
-                return false;
-            }
-        }
-        return true;
+        return courses.stream()
+                .noneMatch(existingCourse -> existingCourse.equals(course) || existingCourse.overlapsWith(course));
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < courses.size(); i++) {
-            if (i > 0) {
-                sb.append("\n");
-            }
-            sb.append(courses.get(i));
-        }
-        return sb.toString();
+        return courses.stream().map(Course::toString).collect(Collectors.joining("\n"));
     }
 }
