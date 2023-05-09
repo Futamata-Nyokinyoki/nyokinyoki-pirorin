@@ -8,7 +8,7 @@ public class TimeTable {
     public TimeTable() {
         this.timeTableDAO = new TimeTableDAO();
         this.courseDAO = new CourseDAO();
-        this.courses = timeTableDAO.getCourses();
+        this.courses = timeTableDAO.getAll();
     }
 
     public List<Course> getCourses() {
@@ -24,12 +24,12 @@ public class TimeTable {
             throw new IllegalArgumentException("Course is not available");
         }
 
-        timeTableDAO.addCourse(course.getId());
+        timeTableDAO.add(course);
         courses.add(course);
     }
 
     public void addCourse(int id) {
-        Course course = courseDAO.getCourse(id);
+        Course course = courseDAO.getById(id);
         this.addCourse(course);
     }
 
@@ -37,17 +37,17 @@ public class TimeTable {
         if (course == null) {
             throw new IllegalArgumentException("Course does not exist");
         }
-        timeTableDAO.removeCourse(course.getId());
+        timeTableDAO.remove(course.getId());
         courses.removeIf(c -> c.equals(course));
     }
 
     public void removeCourse(int id) {
-        Course course = courseDAO.getCourse(id);
+        Course course = courseDAO.getById(id);
         this.removeCourse(course);
     }
 
     public List<Course> getAvailableCourses() {
-        List<Course> courses = courseDAO.getCourses();
+        List<Course> courses = courseDAO.getAll();
         List<Course> availableCourses = new ArrayList<>();
 
         for (Course course : courses) {
@@ -60,7 +60,7 @@ public class TimeTable {
     }
 
     public List<Course> getAvailableCoursesByTimeSlot(int dayOfWeek, int beginPeriod) {
-        List<Course> courses = courseDAO.getCoursesByTimeSlot(dayOfWeek, beginPeriod);
+        List<Course> courses = courseDAO.getByTimeSlot(dayOfWeek, beginPeriod);
         List<Course> availableCourses = new ArrayList<>();
 
         for (Course course : courses) {

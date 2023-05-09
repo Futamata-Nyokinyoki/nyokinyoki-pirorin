@@ -1,33 +1,16 @@
 import java.sql.*;
 import java.util.*;
 
-public class TimeTableDAO {
-    private final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
-
-    static {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Failed to load SQLite JDBC driver", e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url);
-    }
+public class TimeTableDAO extends AbstractDAO<Course> {
 
     public TimeTableDAO() {
-        String sql = "CREATE TABLE IF NOT EXISTS time_tables (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "courseId INTEGER NOT NULL," + "FOREIGN KEY(courseId) REFERENCES courses(id)" + ");";
-
-        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to create time_tables table", e);
-        }
+        String sql = "CREATE TABLE IF NOT EXISTS time_tables (" + "courseId INTEGER PRIMARY KEY,"
+                + "FOREIGN KEY(courseId) REFERENCES courses(id)" + ");";
+        executeUpdate(sql);
     }
 
-    public List<Course> getCourses() {
+    @Override
+    public List<Course> getAll() {
         String sql = "SELECT * FROM time_tables;";
 
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
@@ -36,7 +19,7 @@ public class TimeTableDAO {
 
             while (resultSet.next()) {
                 int courseId = resultSet.getInt("courseId");
-                Course course = new CourseDAO().getCourse(courseId);
+                Course course = new CourseDAO().getById(courseId);
                 courses.add(course);
             }
 
@@ -46,11 +29,12 @@ public class TimeTableDAO {
         }
     }
 
-    public void addCourse(int courseId) {
+    @Override
+    public void add(Course course) {
         String sql = "INSERT INTO time_tables (courseId) VALUES (?);";
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, courseId);
+            statement.setInt(1, course.getId());
             statement.executeUpdate();
             return;
         } catch (SQLException e) {
@@ -58,7 +42,8 @@ public class TimeTableDAO {
         }
     }
 
-    public void removeCourse(int courseId) {
+    @Override
+    public void remove(int courseId) {
         String sql = "DELETE FROM time_tables WHERE courseId = ?;";
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {

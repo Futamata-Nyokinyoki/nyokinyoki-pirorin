@@ -20,7 +20,7 @@ public class Course {
     }
 
     public List<TimeSlot> getTimeSlots() {
-        return timeSlotDAO.getTimeSlotsByCourseId(id);
+        return timeSlotDAO.getByCourseId(id);
     }
 
     public boolean isConflict(Course other) {
