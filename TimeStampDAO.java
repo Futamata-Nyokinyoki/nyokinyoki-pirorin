@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 public class TimeStampDAO {
@@ -12,15 +14,22 @@ public class TimeStampDAO {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            connection = DriverManager.getConnection("jdbc:sqlite:stamptest.db");
+            String dbFilePath = "./timeStamp.db";
+            File dbFile = new File(dbFilePath);
 
-            String tableName = "testTable3";
-            String checkTable = "SELECT name FROM sqlite_master WHERE type='table' AND name ='testTable3'";
+            if (!dbFile.exists()) {
+                dbFile.createNewFile();
+            }
+
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
+
+            String tableName = "Stamps";
+            String checkTable = "SELECT name FROM sqlite_master WHERE type='table' AND name ='Stamps'";
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(checkTable);
 
             if (!rs.next()) {
-                String createTable = "CREATE TABLE testTable3 (year INTEGER, day INTEGER, time INTEGER,youbi INTEGER)";
+                String createTable = "CREATE TABLE Stamps (year INTEGER, day INTEGER, time INTEGER,youbi INTEGER)";
                 statement.executeUpdate(createTable);
             }
 
@@ -28,6 +37,8 @@ public class TimeStampDAO {
                     + time + "," + youbi + ")";
             statement.executeUpdate(insertData);
 
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
