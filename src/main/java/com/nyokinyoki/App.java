@@ -43,6 +43,12 @@ public class App {
             TailTipWidgets tailtipStampWidgets = new TailTipWidgets(reader, tailTips, 5, TipType.COMPLETER);
             tailtipStampWidgets.enable();
 
+            System.out.println("打刻: stamp");
+            System.out.println("履修関連: syllabus");
+
+            System.out.println("履修登録: syllabus -s=<授業ID>");
+            System.out.println("履修削除: syllabus -d=<授業ID>");
+
             while (true) {
                 String line = reader.readLine("=====> ");
                 System.out.println(line);
