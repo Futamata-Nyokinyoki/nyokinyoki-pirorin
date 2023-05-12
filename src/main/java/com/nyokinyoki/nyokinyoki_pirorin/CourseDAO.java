@@ -1,3 +1,5 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.sql.*;
@@ -58,6 +60,17 @@ public class CourseDAO extends AbstractDAO<Course> {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to remove course", e);
+        }
+    }
+
+    @Override
+    public void removeAll() {
+        String sql = "DELETE FROM courses;";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to remove all courses", e);
         }
     }
 

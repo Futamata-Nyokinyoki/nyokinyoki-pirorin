@@ -1,3 +1,5 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 public class TimeSlot {
     private final int id;
     private final int courseId;

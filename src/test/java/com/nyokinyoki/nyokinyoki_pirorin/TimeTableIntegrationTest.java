@@ -1,4 +1,11 @@
+package src.test.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.util.List;
+
+import src.main.java.com.nyokinyoki.nyokinyoki_pirorin.Course;
+import src.main.java.com.nyokinyoki.nyokinyoki_pirorin.CourseDAO;
+import src.main.java.com.nyokinyoki.nyokinyoki_pirorin.TimeTable;
+import src.main.java.com.nyokinyoki.nyokinyoki_pirorin.TimeTableDAO;
 
 public class TimeTableIntegrationTest {
 
@@ -14,7 +21,6 @@ public class TimeTableIntegrationTest {
             System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
             int choice = Integer.parseInt(System.console().readLine());
-            List<Course> courses;
 
             switch (choice) {
             case 1:

@@ -1,3 +1,5 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

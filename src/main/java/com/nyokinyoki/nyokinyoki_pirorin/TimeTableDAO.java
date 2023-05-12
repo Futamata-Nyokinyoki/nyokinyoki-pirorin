@@ -1,3 +1,5 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.sql.*;
 import java.util.*;
 
@@ -54,4 +56,17 @@ public class TimeTableDAO extends AbstractDAO<Course> {
             throw new RuntimeException("Failed to remove course from timetable", e);
         }
     }
+
+    @Override
+    public void removeAll() {
+        String sql = "DELETE FROM time_tables;";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+            return;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to remove all courses from timetable", e);
+        }
+    }
+
 }

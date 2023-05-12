@@ -1,3 +1,5 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.sql.*;
 import java.util.*;
 
@@ -62,6 +64,17 @@ public class TimeSlotDAO extends AbstractDAO<TimeSlot> {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to remove time slot", e);
+        }
+    }
+
+    @Override
+    public void removeAll() {
+        String sql = "DELETE FROM time_slots";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to remove all time slots", e);
         }
     }
 

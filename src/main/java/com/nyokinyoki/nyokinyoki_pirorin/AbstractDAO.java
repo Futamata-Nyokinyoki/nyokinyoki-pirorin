@@ -1,8 +1,11 @@
+package src.main.java.com.nyokinyoki.nyokinyoki_pirorin;
+
 import java.sql.*;
 import java.util.*;
 
 public abstract class AbstractDAO<T> {
-    protected final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
+
+    protected final String url = "jdbc:sqlite:src/main/resources/NyokinyokiPirorin.db";
 
     static {
         try {
@@ -21,6 +24,8 @@ public abstract class AbstractDAO<T> {
     public abstract void add(T item);
 
     public abstract void remove(int id);
+
+    public abstract void removeAll();
 
     protected void executeUpdate(String sql) {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
