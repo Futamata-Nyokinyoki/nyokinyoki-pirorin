@@ -3,8 +3,6 @@ package com.nyokinyoki;
 import java.sql.*;
 import java.util.*;
 
-import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
-
 public class TimeSlotDAO extends AbstractDAO<TimeSlot> {
 
     public TimeSlotDAO() {
@@ -85,22 +83,7 @@ public class TimeSlotDAO extends AbstractDAO<TimeSlot> {
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, courseId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                List<TimeSlot> timeSlots = new ArrayList<>();
-
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    int dayOfWeek = resultSet.getInt("dayOfWeek");
-                    int beginPeriod = resultSet.getInt("beginPeriod");
-                    int endPeriod = resultSet.getInt("endPeriod");
-
-                    TimeSlot timeSlot = new TimeSlot(id, courseId, dayOfWeek, beginPeriod, endPeriod);
-                    timeSlots.add(timeSlot);
-                }
-
-                return timeSlots;
-            }
+            return executeQueryAndGetTimeSlots(statement, courseId, 0, 0);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get time slots by course id", e);
         }
@@ -112,24 +95,25 @@ public class TimeSlotDAO extends AbstractDAO<TimeSlot> {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, dayOfWeek);
             statement.setInt(2, beginPeriod);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                List<TimeSlot> timeSlots = new ArrayList<>();
-
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    int courseId = resultSet.getInt("courseId");
-                    int endPeriod = resultSet.getInt("endPeriod");
-
-                    TimeSlot timeSlot = new TimeSlot(id, courseId, dayOfWeek, beginPeriod, endPeriod);
-                    timeSlots.add(timeSlot);
-                }
-
-                return timeSlots;
-            }
+            return executeQueryAndGetTimeSlots(statement, 0, dayOfWeek, beginPeriod);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get time slots by dayOfWeek and beginPeriod", e);
         }
     }
 
+    private List<TimeSlot> executeQueryAndGetTimeSlots(PreparedStatement statement, int courseId, int dayOfWeek,
+            int beginPeriod) {
+        try (ResultSet resultSet = statement.executeQuery()) {
+            List<TimeSlot> timeSlots = new ArrayList<>();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int endPeriod = resultSet.getInt("endPeriod");
+                TimeSlot timeSlot = new TimeSlot(id, courseId, dayOfWeek, beginPeriod, endPeriod);
+                timeSlots.add(timeSlot);
+            }
+            return timeSlots;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to execute query and get time slots", e);
+        }
+    }
 }

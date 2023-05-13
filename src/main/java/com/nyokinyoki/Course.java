@@ -1,11 +1,8 @@
-package com.nyokinyoki.TimeTable.Course;
+package com.nyokinyoki;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlotDAO;
 
 public class Course {
     private final int id;

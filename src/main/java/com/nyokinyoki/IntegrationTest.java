@@ -2,15 +2,13 @@ package com.nyokinyoki;
 
 import java.util.List;
 import java.time.*;
-
-import com.nyokinyoki.TimeTable.*;
-import com.nyokinyoki.TimeTable.Course.*;
+import java.time.format.*;;
 
 public class IntegrationTest {
 
     private static TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
     private static TimeCard timeCard = new TimeCard(new TimestampDAO());
-    private static AttendanceManager attendanceManager = new AttendanceManager(timeTable, timeCard);
+    private static AttendManager attendanceManager = new AttendManager(timeTable, timeCard);
 
     public static void main(String[] args) {
         while (true) {
@@ -90,7 +88,8 @@ public class IntegrationTest {
     private static void stamp() {
         System.out.println("Enter timestamp (yyyy-MM-dd HH:mm:ss): ");
         String timestampString = System.console().readLine();
-        LocalDateTime timestamp = LocalDateTime.parse(timestampString);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime timestamp = LocalDateTime.parse(timestampString, formatter);
         timeCard.stamp(timestamp);
         StampStatus status = attendanceManager.getStampStatus(timestamp);
         System.out.println(status);

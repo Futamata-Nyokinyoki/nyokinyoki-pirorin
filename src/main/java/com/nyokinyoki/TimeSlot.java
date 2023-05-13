@@ -1,8 +1,7 @@
-package com.nyokinyoki.TimeTable.Course.TimeSlot;
+package com.nyokinyoki;
 
 import java.time.*;
 import java.util.*;
-import com.nyokinyoki.*;
 
 public class TimeSlot {
     private final int id;
@@ -11,11 +10,11 @@ public class TimeSlot {
     private final int beginPeriod;
     private final int endPeriod;
 
-    public static final LocalDateTime FIRST_PERIOD_START_TIME = LocalDateTime.parse("2023-01-01T08:50:00");
-    public static final int PERIOD_DURATION_MINUTES = 90;
-    public static final int SHORT_BREAK_DURATION_MINUTES = 10;
-    public static final int LUNCH_BREAK_DURATION_MINUTES = 60;
-    public static final int FIRST_PERIOD_AFTER_LUNCH = 3;
+    private static final LocalDateTime FIRST_PERIOD_START_TIME = LocalDateTime.parse("2023-01-01T08:50:00");
+    private static final int PERIOD_DURATION_MINUTES = 90;
+    private static final int SHORT_BREAK_DURATION_MINUTES = 10;
+    private static final int LUNCH_BREAK_DURATION_MINUTES = 60;
+    private static final int FIRST_PERIOD_AFTER_LUNCH = 3;
 
     public static final int STAMP_START_DURATION_MINUTES_FIRST_AND_AFTER_LUNCH = 20;
     public static final int STAMP_START_DURATION_MINUTES = 10;
@@ -53,8 +52,8 @@ public class TimeSlot {
         return endPeriod;
     }
 
-    public int getDuration() {
-        return endPeriod - beginPeriod + 1;
+    public Course getCourse() {
+        return new CourseDAO().getById(courseId);
     }
 
     public boolean overlapsWith(TimeSlot other) {
@@ -67,8 +66,8 @@ public class TimeSlot {
 
     @Override
     public String toString() {
-        return String.format("TimeSlot {id=%d, courseId=%d, dayOfWeek=%d, beginPeriod=%d, endPeriod=%d}", id, courseId,
-                dayOfWeek, beginPeriod, endPeriod);
+        return String.format("TimeSlot {dayOfWeek=%d, beginPeriod=%d, endPeriod=%d}", dayOfWeek, beginPeriod,
+                endPeriod);
     }
 
     public static LocalDateTime getStartTimeForPeriod(int period) {

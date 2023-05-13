@@ -1,13 +1,8 @@
-package com.nyokinyoki.TimeTable.Course;
+package com.nyokinyoki;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import com.nyokinyoki.AbstractDAO;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlotDAO;
-
 import java.sql.*;
+import java.util.stream.*;
 
 public class CourseDAO extends AbstractDAO<Course> {
     private final TimeSlotDAO timeSlotDAO;

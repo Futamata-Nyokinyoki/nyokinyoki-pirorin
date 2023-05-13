@@ -1,7 +1,5 @@
 package com.nyokinyoki;
 
-import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
-
 public class StampStatus {
     private final int status;
     private final TimeSlot timeSlot;
@@ -28,22 +26,29 @@ public class StampStatus {
     public String toString() {
         String statusDescription;
         switch (status) {
-            case OUT_INVALID:
-                statusDescription = "OUT_INVALID";
-                break;
-            case IN_INVALID:
-                statusDescription = "IN_INVALID";
-                break;
-            case START:
-                statusDescription = "START";
-                break;
-            case END:
-                statusDescription = "END";
-                break;
-            default:
-                statusDescription = "UNKNOWN";
-                break;
+        case OUT_INVALID:
+            statusDescription = "OUT_INVALID";
+            break;
+        case IN_INVALID:
+            statusDescription = "IN_INVALID";
+            break;
+        case START:
+            statusDescription = "START";
+            break;
+        case END:
+            statusDescription = "END";
+            break;
+        default:
+            statusDescription = "UNKNOWN";
+            break;
         }
-        return "StampStatus {" + "status=" + statusDescription + ", timeSlot=" + timeSlot + '}';
+
+        if (timeSlot == null) {
+            return "StampStatus {" + "status=" + statusDescription + '}';
+        }
+
+        return "StampStatus {" + "courseId=" + timeSlot.getCourse().getId() + ", course="
+                + timeSlot.getCourse().getCourseName() + ", timeSlot=" + timeSlot + ", status=" + statusDescription
+                + '}';
     }
 }
