@@ -1,5 +1,12 @@
+package com.nyokinyoki.TimeTable.Course;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.nyokinyoki.AbstractDAO;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlotDAO;
+
 import java.sql.*;
 
 public class CourseDAO extends AbstractDAO<Course> {
@@ -61,6 +68,17 @@ public class CourseDAO extends AbstractDAO<Course> {
         }
     }
 
+    @Override
+    public void removeAll() {
+        String sql = "DELETE FROM courses;";
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to remove all courses", e);
+        }
+    }
+
     public Course getById(int id) {
         String sql = "SELECT * FROM courses WHERE id = ?;";
 
@@ -82,7 +100,7 @@ public class CourseDAO extends AbstractDAO<Course> {
         }
     }
 
-    public List<Course> getByTimeSlot(int dayOfWeek, int beginPeriod) {
+    public List<Course> getByPeriod(int dayOfWeek, int beginPeriod) {
         List<TimeSlot> timeSlots = timeSlotDAO.getByPeriod(dayOfWeek, beginPeriod);
 
         return timeSlots.stream().map(timeSlot -> getById(timeSlot.getCourseId())).filter(Objects::nonNull)

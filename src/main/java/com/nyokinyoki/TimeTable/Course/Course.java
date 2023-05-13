@@ -1,4 +1,11 @@
+package com.nyokinyoki.TimeTable.Course;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.*;
+
+import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlotDAO;
 
 public class Course {
     private final int id;
@@ -21,6 +28,10 @@ public class Course {
 
     public List<TimeSlot> getTimeSlots() {
         return timeSlots;
+    }
+
+    public List<TimeSlot> getTimeSlotsByDayOfWeek(DayOfWeek dayOfWeek) {
+        return timeSlots.stream().filter(timeSlot -> timeSlot.getDayOfWeek() == dayOfWeek.getValue()).toList();
     }
 
     public boolean overlapsWith(Course other) {
@@ -48,5 +59,9 @@ public class Course {
     @Override
     public String toString() {
         return "Course{" + "id=" + id + ", courseName='" + courseName + '\'' + '}';
+    }
+
+    public TimeSlot getOngoingTimeSlot(LocalDateTime timestamp) {
+        return timeSlots.stream().filter(timeSlot -> timeSlot.isOngoing(timestamp)).findFirst().orElse(null);
     }
 }

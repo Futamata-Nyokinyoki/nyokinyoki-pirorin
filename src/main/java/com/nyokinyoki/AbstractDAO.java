@@ -1,3 +1,5 @@
+package com.nyokinyoki;
+
 import java.sql.*;
 import java.util.*;
 
@@ -21,6 +23,8 @@ public abstract class AbstractDAO<T> {
     public abstract void add(T item);
 
     public abstract void remove(int id);
+
+    public abstract void removeAll();
 
     protected void executeUpdate(String sql) {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
