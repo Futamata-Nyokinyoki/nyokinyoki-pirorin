@@ -1,10 +1,13 @@
 package com.nyokinyoki.TimeTable;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.nyokinyoki.TimeTable.Course.Course;
 import com.nyokinyoki.TimeTable.Course.CourseDAO;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
 
 public class TimeTable {
     private final List<Course> courses;
@@ -41,6 +44,16 @@ public class TimeTable {
 
     public void removeCourse(int id) {
         removeCourse(courseDAO.getById(id));
+    }
+
+    public TimeSlot getOngoingTimeSlot(LocalDateTime timestamp) {
+        return courses.stream().map(course -> course.getOngoingTimeSlot(timestamp)).filter(Objects::nonNull).findFirst()
+                .orElse(null);
+    }
+
+    public List<TimeSlot> getTimeSlotsByDayOfWeek(DayOfWeek dayOfWeek) {
+        return courses.stream().flatMap(course -> course.getTimeSlotsByDayOfWeek(dayOfWeek).stream())
+                .collect(Collectors.toList());
     }
 
     public List<Course> getAvailableCourses() {

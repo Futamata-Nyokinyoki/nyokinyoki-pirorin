@@ -1,6 +1,8 @@
 package com.nyokinyoki.TimeTable.Course.TimeSlot;
 
 import java.time.*;
+import java.util.*;
+import com.nyokinyoki.*;
 
 public class TimeSlot {
     private final int id;
@@ -18,11 +20,6 @@ public class TimeSlot {
     public static final int STAMP_START_DURATION_MINUTES_FIRST_AND_AFTER_LUNCH = 20;
     public static final int STAMP_START_DURATION_MINUTES = 10;
     public static final int STAMP_END_DURATION_MINUTES = 10;
-
-    public static final int ABSENT = 0;
-    public static final int LEFT_EARLY = 1;
-    public static final int LATE = 2;
-    public static final int PRESENT = 3;
 
     public TimeSlot(int id, int courseId, int dayOfWeek, int beginPeriod, int endPeriod) {
         if (endPeriod < beginPeriod) {
@@ -124,14 +121,39 @@ public class TimeSlot {
         return time.isAfter(getEndStampTimeStart()) && time.isBefore(getEndStampTimeEnd());
     }
 
+    public boolean isOngoing(LocalDateTime time) {
+        return time.isAfter(getStartStampTimeStart()) && time.isBefore(getEndStampTimeEnd());
+    }
+
     public int getStampStatus(LocalDateTime time) {
-        int status = ABSENT;
-        if (isBetweenStampStartTime(time)) {
-            status += 1;
+        if (time.isBefore(getStartStampTimeStart())) {
+            return StampStatus.OUT_INVALID;
+        } else if (time.isBefore(getStartStampTimeEnd())) {
+            return StampStatus.START;
+        } else if (time.isBefore(getEndStampTimeStart())) {
+            return StampStatus.IN_INVALID;
+        } else if (time.isBefore(getEndStampTimeEnd())) {
+            return StampStatus.END;
+        } else {
+            return StampStatus.OUT_INVALID;
         }
-        if (isBetweenStampEndTime(time)) {
-            status += 2;
+    }
+
+    public int getAttendStatus(List<LocalDateTime> timestamps) {
+        int status = AttendStatus.ABSENT;
+        for (LocalDateTime timestamp : timestamps) {
+            if (isBetweenStampStartTime(timestamp)) {
+                status += AttendStatus.START_STAMP;
+                break;
+            }
+        }
+        for (LocalDateTime timestamp : timestamps) {
+            if (isBetweenStampEndTime(timestamp)) {
+                status += AttendStatus.END_STAMP;
+                break;
+            }
         }
         return status;
     }
+
 }

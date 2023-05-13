@@ -1,11 +1,11 @@
 package com.nyokinyoki;
 
-import com.nyokinyoki.TimeTable.TimeTable;
-import com.nyokinyoki.TimeTable.Course.Course;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
-
 import java.time.*;
 import java.util.*;
+
+import com.nyokinyoki.TimeTable.*;
+import com.nyokinyoki.TimeTable.Course.*;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
 
 public class AttendanceManager {
     private final TimeTable timeTable;
@@ -16,61 +16,48 @@ public class AttendanceManager {
         this.timeCard = timeCard;
     }
 
-    public StampStatus getStampStatus(LocalDateTime timestamp, Course course) {
-        int dayOfWeek = timestamp.getDayOfWeek().getValue();
-        for (TimeSlot timeSlot : course.getTimeSlots()) {
-            if (timeSlot.getDayOfWeek() != dayOfWeek) {
-                continue;
-            }
-            if (timeSlot.isBetweenStampEndTime(timestamp)) {
-                return new StampStatus(StampStatus.START, course);
-            }
-            if (timeSlot.isBetweenStampStartTime(timestamp)) {
-                return new StampStatus(StampStatus.END, course);
-            }
-        }
-        return new StampStatus(StampStatus.NONE, null);
-    }
-
     public StampStatus getStampStatus(LocalDateTime timestamp) {
-        List<Course> courses = timeTable.getCourses();
-        for (Course course : courses) {
-            StampStatus stampStatus = getStampStatus(timestamp, course);
-            if (stampStatus.getStatus() != StampStatus.NONE) {
-                return stampStatus;
-            }
-        }
-        return new StampStatus(StampStatus.NONE, null);
+        TimeSlot timeSlot = timeTable.getOngoingTimeSlot(timestamp);
+        int status = timeSlot.getStampStatus(timestamp);
+        return new StampStatus(status, timeSlot);
     }
 
-    public List<StampStatus> getStampStatus(List<LocalDateTime> timestamps) {
+    public List<StampStatus> getStampStatusesByDate(LocalDateTime date) {
         List<StampStatus> stampStatuses = new ArrayList<>();
-        for (LocalDateTime timestamp : timestamps) {
-            stampStatuses.add(getStampStatus(timestamp));
-        }
-        return stampStatuses;
-    }
-
-    public List<StampStatus> getAllStampStatus() {
-        List<LocalDateTime> timestamps = timeCard.getTimestamps();
-        return getStampStatus(timestamps);
-    }
-
-    public List<StampStatus> getStampStatuses(LocalDateTime date) {
         List<LocalDateTime> timestamps = timeCard.getTimestampsByDate(date);
-        return getStampStatus(timestamps);
-    }
-
-    public List<StampStatus> getStampStatus(Course course) {
-        List<LocalDateTime> timestamps = timeCard.getTimestamps();
-        List<StampStatus> stampStatuses = new ArrayList<>();
         for (LocalDateTime timestamp : timestamps) {
-            StampStatus stampStatus = getStampStatus(timestamp, course);
-            if (stampStatus.getStatus() != StampStatus.NONE) {
-                stampStatuses.add(stampStatus);
-            }
+            TimeSlot timeSlot = timeTable.getOngoingTimeSlot(timestamp);
+            int status = timeSlot.getStampStatus(timestamp);
+            stampStatuses.add(new StampStatus(status, timeSlot));
         }
         return stampStatuses;
     }
 
+    public AttendStatus getAttendStatus(List<LocalDateTime> timestamps) {
+        TimeSlot timeSlot = timeTable.getOngoingTimeSlot(timestamps.get(0));
+        int status = timeSlot.getAttendStatus(timestamps);
+        return new AttendStatus(timeSlot, status);
+    }
+
+    public AttendStatus getAttendStatusByTimeSlot(TimeSlot timeSlot) {
+        List<LocalDateTime> timestamps = timeCard.getTimestampsByTimeSlot(timeSlot);
+        int status = timeSlot.getAttendStatus(timestamps);
+        return new AttendStatus(timeSlot, status);
+    }
+
+    public List<AttendStatus> getAttendStatusesByDate(LocalDateTime date) {
+        List<AttendStatus> attendStatuses = new ArrayList<>();
+        for (TimeSlot timeSlot : timeTable.getTimeSlotsByDayOfWeek(date.getDayOfWeek())) {
+            attendStatuses.add(getAttendStatusByTimeSlot(timeSlot));
+        }
+        return attendStatuses;
+    }
+
+    public List<AttendStatus> getAttendStatusesByCourse(Course course) {
+        List<AttendStatus> attendStatuses = new ArrayList<>();
+        for (TimeSlot timeSlot : course.getTimeSlots()) {
+            attendStatuses.add(getAttendStatusByTimeSlot(timeSlot));
+        }
+        return attendStatuses;
+    }
 }

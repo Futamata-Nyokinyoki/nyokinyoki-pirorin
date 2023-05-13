@@ -1,25 +1,49 @@
 package com.nyokinyoki;
 
-import com.nyokinyoki.TimeTable.Course.Course;
+import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
 
 public class StampStatus {
     private final int status;
-    private final Course course;
+    private final TimeSlot timeSlot;
 
-    public static final int NONE = 0;
-    public static final int START = 1;
-    public static final int END = 2;
+    public static final int OUT_INVALID = 0;
+    public static final int IN_INVALID = 1;
+    public static final int START = 2;
+    public static final int END = 3;
 
-    public StampStatus(int status, Course course) {
+    public StampStatus(int status, TimeSlot timeSlot) {
         this.status = status;
-        this.course = course;
+        this.timeSlot = timeSlot;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public Course getCourse() {
-        return course;
+    public TimeSlot getTimeSlot() {
+        return timeSlot;
+    }
+
+    @Override
+    public String toString() {
+        String statusDescription;
+        switch (status) {
+            case OUT_INVALID:
+                statusDescription = "OUT_INVALID";
+                break;
+            case IN_INVALID:
+                statusDescription = "IN_INVALID";
+                break;
+            case START:
+                statusDescription = "START";
+                break;
+            case END:
+                statusDescription = "END";
+                break;
+            default:
+                statusDescription = "UNKNOWN";
+                break;
+        }
+        return "StampStatus {" + "status=" + statusDescription + ", timeSlot=" + timeSlot + '}';
     }
 }

@@ -1,26 +1,33 @@
-package com.nyokinyoki.TimeTable;
+package com.nyokinyoki;
 
 import java.util.List;
+import java.time.*;
 
-import com.nyokinyoki.TimeTable.Course.Course;
-import com.nyokinyoki.TimeTable.Course.CourseDAO;
+import com.nyokinyoki.TimeTable.*;
+import com.nyokinyoki.TimeTable.Course.*;
 
-public class TimeTableIntegrationTest {
+public class IntegrationTest {
 
     private static TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
+    private static TimeCard timeCard = new TimeCard(new TimestampDAO());
+    private static AttendanceManager attendanceManager = new AttendanceManager(timeTable, timeCard);
 
     public static void main(String[] args) {
         while (true) {
+            System.out.println("0. Exit");
             System.out.println("1. Show registered courses");
             System.out.println("2. Add course");
             System.out.println("3. Remove course");
             System.out.println("4. Get available courses");
             System.out.println("5. Get available courses by time slot");
-            System.out.println("6. Exit");
+            System.out.println("6. Stamp");
+            System.out.println("7. ");
             System.out.print("Enter your choice: ");
             int choice = Integer.parseInt(System.console().readLine());
 
             switch (choice) {
+            case 0:
+                System.exit(0);
             case 1:
                 showRegisteredCourses();
                 break;
@@ -37,7 +44,8 @@ public class TimeTableIntegrationTest {
                 getAvailableCoursesByTimeSlot();
                 break;
             case 6:
-                System.exit(0);
+                stamp();
+                break;
             default:
                 System.out.println("Invalid choice");
             }
@@ -78,4 +86,14 @@ public class TimeTableIntegrationTest {
             System.out.println(c);
         }
     }
+
+    private static void stamp() {
+        System.out.println("Enter timestamp (yyyy-MM-dd HH:mm:ss): ");
+        String timestampString = System.console().readLine();
+        LocalDateTime timestamp = LocalDateTime.parse(timestampString);
+        timeCard.stamp(timestamp);
+        StampStatus status = attendanceManager.getStampStatus(timestamp);
+        System.out.println(status);
+    }
+
 }
