@@ -1,79 +1,139 @@
 package com.nyokinyoki;
 
-import org.jline.console.*;
 import org.jline.reader.*;
-import org.jline.reader.impl.DefaultParser;
-import org.jline.reader.impl.completer.StringsCompleter;
-import org.jline.terminal.*;
-import org.jline.utils.AttributedString;
-import org.jline.widget.TailTipWidgets.TipType;
-import org.jline.widget.TailTipWidgets;
 
-import java.io.IOException;
+import com.nyokinyoki.Terminal.UtilizedTerminal;
+import com.nyokinyoki.TimeTable.TimeTable;
+import com.nyokinyoki.TimeTable.TimeTableDAO;
+import com.nyokinyoki.TimeTable.Course.Course;
+import com.nyokinyoki.TimeTable.Course.CourseDAO;
+
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import com.nyokinyoki.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class App {
+    // Please uncomment out below if all is ready;
+    // static TimeTable timeTable = new TimeTable(new TimeTableDAO(), new
+    // CourseDAO());
+    // static TimeCard timeCard = new TimeCard(new TimestampDAO());
+    // static AttendanceManager attendanceManager = new AttendanceManager(timeTable,
+    // timeCard);
+
     public static void main(String[] args) {
-        // Terminalオブジェクトの生成
-        try (Terminal terminal = TerminalBuilder.terminal()) {
-            Completer completer = new StringsCompleter("stamp", "syllabus");
-            Parser parser = new DefaultParser();
-            // LineReaderオブジェクトの生成
-            LineReader reader = LineReaderBuilder.builder().terminal(terminal).completer(completer).parser(parser)
-                    .build();
-            Map<String, CmdDesc> tailTips = new HashMap<>();
-            Map<String, List<AttributedString>> stampWidgetOpts = new HashMap<>();
-            Map<String, List<AttributedString>> syllabusWidgetOpts = new HashMap<>();
-            List<AttributedString> stampMainDesc = Arrays.asList(
-                    new AttributedString("stamp"));
-            List<AttributedString> syllabusMainDesc = Arrays.asList(
-                    new AttributedString("syllabus"));
-
-            stampWidgetOpts.put("-s", Arrays.asList(new AttributedString("打刻をする")));
-
-            syllabusWidgetOpts.put("-d", Arrays.asList(new AttributedString("履修登録削除")));
-            syllabusWidgetOpts.put("-s", Arrays.asList(new AttributedString("履修登録")));
-
-            tailTips.put("stamp",
-                    new CmdDesc(stampMainDesc, ArgDesc.doArgNames(Arrays.asList("-s")), stampWidgetOpts));
-            tailTips.put("syllabus",
-                    new CmdDesc(syllabusMainDesc, ArgDesc.doArgNames(Arrays.asList("-s=id", "-d=id")),
-                            syllabusWidgetOpts));
-
-            TailTipWidgets tailtipStampWidgets = new TailTipWidgets(reader, tailTips, 5, TipType.COMPLETER);
-            tailtipStampWidgets.enable();
-
-            System.out.println("打刻: stamp");
-            System.out.println("履修関連: syllabus");
-
-            System.out.println("履修登録: syllabus -s=<授業ID>");
-            System.out.println("履修削除: syllabus -d=<授業ID>");
-
+        LineReader reader = new UtilizedTerminal().getReader();
+        List<Pattern> patterns = UtilizedTerminal.getAllOptions().stream()
+                .map(option -> Pattern.compile(option.getPattern())).collect(Collectors.toList());
+        try {
             while (true) {
                 String line = reader.readLine("=====> ");
-                System.out.println(line);
-                if (line.equals("stamp")) {
-                    // if(成功){
-                    // 打刻;
-                    // } else {
-                    // **通常打刻：打刻しました**とメッセージを表示する
-                    // }
-                } else if (line.equals("syllabus")) {
-                    // if(履修登録){
-                    // 入力からidを取得して履修登録;
-                    // if(時間割が被る){
-                    // 最初に戻る;
-                    // } else if (履修登録消去) {
-                    // 入力からidを取得して履修消去;
-                    // }
-                    // if(成功){
-                    // 戻る;
-                    // }
+                Matcher match;
+                for (int i = 0; i < patterns.size(); i++) {
+                    Pattern p = patterns.get(i);
+                    match = p.matcher(line);
+                    if (match.matches()) {
+                        hoge(i, match);
+                        break;
+                    }
                 }
             }
-            // その後の時間割表の表示;
-        } catch (IOException | UserInterruptException ex) {
-            System.out.println("Abrupt process");
+        } catch (UserInterruptException e) {
+            System.out.println("処理が中断されました");
         }
     }
+
+    static void hoge(int i, Matcher match) {
+        int groupCount = match.groupCount();
+        switch (i) {
+        case 0: {
+            System.out.println(i);
+            System.out.println("Show Registered Courses");
+            // Please uncomment out below if all is ready;
+            // showRegisteredCourses();
+            break;
+        }
+        case 1: {
+            System.out.println(i);
+            System.out.println("Get Available Courses");
+            // Please uncomment out below if all is ready;
+            // getAvailableCourses();
+            break;
+        }
+        case 2: {
+            System.out.println(i);
+            System.out.println("Get Available Courses By Time Slot");
+            if (groupCount <= 1) {
+                System.out.println("getAvailableCourses: Invalid");
+                return;
+            }
+            int dayOfWeek = Integer.parseInt(match.group(1));
+            int beginPeriod = Integer.parseInt(match.group(2));
+            System.out.println("Day of week: " + dayOfWeek);
+            System.out.println("Beginning Period: " + beginPeriod);
+            // Please uncomment out below if all is ready;
+            // getAvailableCoursesByTimeSlot(dayOfWeek, beginPeriod);
+            break;
+        }
+        case 3: {
+            System.out.println(i);
+            System.out.println("Add Course");
+            if (groupCount <= 0) {
+                System.out.println("Add Course: Invalid Input");
+            }
+            int id = Integer.parseInt(match.group(1));
+            System.out.println("Course ID: " + id);
+            // Please uncomment out below if all is ready;
+            // addCourse(id);
+            break;
+        }
+        case 4: {
+            System.out.println(i);
+            System.out.println("Remove Course");
+            if (groupCount <= 0) {
+                System.out.println("Remove Course: Invalid Input");
+            }
+            int id = Integer.parseInt(match.group(1));
+            System.out.println("Course ID: " + id);
+            // Please uncomment out below if all is ready;
+            // removeCourse(id);
+            break;
+        }
+        default: {
+            throw new Error("Expected index from 0 to 4, but got: " + i);
+        }
+        }
+    }
+
+    // private static void showRegisteredCourses() {
+    // System.out.println("Registered courses:");
+    // System.out.println(timeTable);
+    // }
+
+    // private static void addCourse(int id) {
+    // timeTable.addCourse(id);
+    // }
+
+    // private static void removeCourse(int id) {
+    // timeTable.removeCourse(id);
+    // }
+
+    // private static void getAvailableCourses() {
+    // List<Course> courses = timeTable.getAvailableCourses();
+    // for (Course c : courses) {
+    // System.out.println(c);
+    // }
+    // }
+
+    // private static void getAvailableCoursesByTimeSlot(int dayOfWeek, int
+    // beginPeriod) {
+    // List<Course> courses = timeTable.getAvailableCoursesByPeriod(dayOfWeek,
+    // beginPeriod);
+    // for (Course c : courses) {
+    // System.out.println(c);
+    // }
+    // }
 }
