@@ -72,7 +72,7 @@ public class TimeSlot {
 
     public static LocalDateTime getStartTimeForPeriod(int period) {
         Duration duration = Duration.ofMinutes((period - 1) * (PERIOD_DURATION_MINUTES + SHORT_BREAK_DURATION_MINUTES));
-        if (period > FIRST_PERIOD_AFTER_LUNCH) {
+        if (period >= FIRST_PERIOD_AFTER_LUNCH) {
             duration = duration.plusMinutes(LUNCH_BREAK_DURATION_MINUTES - SHORT_BREAK_DURATION_MINUTES);
         }
         return FIRST_PERIOD_START_TIME.plus(duration);
@@ -101,7 +101,7 @@ public class TimeSlot {
     }
 
     public LocalDateTime getStartStampTimeEnd() {
-        return getStartTime().minusMinutes(STAMP_END_DURATION_MINUTES);
+        return getStartTime().plusMinutes(STAMP_END_DURATION_MINUTES);
     }
 
     public LocalDateTime getEndStampTimeStart() {
@@ -113,18 +113,34 @@ public class TimeSlot {
     }
 
     public boolean isBetweenStampStartTime(LocalDateTime time) {
+        if (time.getDayOfWeek().getValue() != dayOfWeek) {
+            return false;
+        }
+        time = time.withDayOfYear(1);
         return time.isAfter(getStartStampTimeStart()) && time.isBefore(getStartStampTimeEnd());
     }
 
     public boolean isBetweenStampEndTime(LocalDateTime time) {
+        if (time.getDayOfWeek().getValue() != dayOfWeek) {
+            return false;
+        }
+        time = time.withDayOfYear(1);
         return time.isAfter(getEndStampTimeStart()) && time.isBefore(getEndStampTimeEnd());
     }
 
     public boolean isOngoing(LocalDateTime time) {
+        if (time.getDayOfWeek().getValue() != dayOfWeek) {
+            return false;
+        }
+        time = time.withDayOfYear(1);
         return time.isAfter(getStartStampTimeStart()) && time.isBefore(getEndStampTimeEnd());
     }
 
     public int getStampStatus(LocalDateTime time) {
+        if (time.getDayOfWeek().getValue() != dayOfWeek) {
+            return StampStatus.OUT_INVALID;
+        }
+        time = time.withDayOfYear(1);
         if (time.isBefore(getStartStampTimeStart())) {
             return StampStatus.OUT_INVALID;
         } else if (time.isBefore(getStartStampTimeEnd())) {

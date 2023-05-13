@@ -47,8 +47,8 @@ public class StampStatus {
             return "StampStatus {" + "status=" + statusDescription + '}';
         }
 
-        return "StampStatus {" + "courseId=" + timeSlot.getCourse().getId() + ", course="
-                + timeSlot.getCourse().getCourseName() + ", timeSlot=" + timeSlot + ", status=" + statusDescription
+        return "StampStatus {" + "courseId=" + timeSlot.getCourse().getId() + ", courseName='"
+                + timeSlot.getCourse().getCourseName() + "', timeSlot=" + timeSlot + ", status=" + statusDescription
                 + '}';
     }
 }

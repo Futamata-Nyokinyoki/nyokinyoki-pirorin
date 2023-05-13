@@ -14,6 +14,10 @@ public class TimeCard {
         timestampDAO.add(timestamp);
     }
 
+    public List<LocalDateTime> getAllTimestamps() {
+        return timestampDAO.getAll();
+    }
+
     public List<LocalDateTime> getTimestampsByDate(LocalDate date) {
         return timestampDAO.getByDate(date);
     }

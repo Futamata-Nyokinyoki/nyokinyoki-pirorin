@@ -25,6 +25,22 @@ public class AttendManager {
         }
     }
 
+    public List<StampStatus> getAllStampStatuses() {
+        List<StampStatus> stampStatuses = new ArrayList<>();
+        List<LocalDateTime> timestamps = timeCard.getAllTimestamps();
+        for (LocalDateTime timestamp : timestamps) {
+            Optional<TimeSlot> optionalTimeSlot = timeTable.getOngoingTimeSlot(timestamp);
+            if (optionalTimeSlot.isPresent()) {
+                TimeSlot timeSlot = optionalTimeSlot.get();
+                int status = timeSlot.getStampStatus(timestamp);
+                stampStatuses.add(new StampStatus(status, timeSlot));
+            } else {
+                stampStatuses.add(new StampStatus(StampStatus.OUT_INVALID, null));
+            }
+        }
+        return stampStatuses;
+    }
+
     public List<StampStatus> getStampStatusesByDate(LocalDate date) {
         List<StampStatus> stampStatuses = new ArrayList<>();
         List<LocalDateTime> timestamps = timeCard.getTimestampsByDate(date);
@@ -64,6 +80,7 @@ public class AttendManager {
         List<TimeSlot> timeSlots = timeTable.getTimeSlotsByDayOfWeek(date.getDayOfWeek());
         for (TimeSlot timeSlot : timeSlots) {
             List<LocalDateTime> timestamps = timeCard.getTimestampsByDateAndTimeSlot(date, timeSlot);
+
             int status = timeSlot.getAttendStatus(timestamps);
             attendStatuses.add(new AttendStatus(date, timeSlot, status));
         }
