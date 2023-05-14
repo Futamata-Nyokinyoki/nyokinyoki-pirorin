@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.List;
 
 public sealed abstract class AbstractDAO<T> permits TimetableDAO, CourseDAO, TimeslotDAO, TimestampDAO {
-    protected final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
+    protected final String url = "jdbc:sqlite:nyokinyoki-pirorin.db";
 
     static {
         try {
