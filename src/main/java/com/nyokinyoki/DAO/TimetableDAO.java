@@ -1,11 +1,14 @@
-package com.nyokinyoki.Timetable;
+package com.nyokinyoki.DAO;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.nyokinyoki.AbstractDAO;
-import com.nyokinyoki.Course.Course;
-import com.nyokinyoki.Course.CourseDAO;
+import com.nyokinyoki.Timetable.Course;
 
 public final class TimetableDAO extends AbstractDAO<Course> {
     private static TimetableDAO instance = null;

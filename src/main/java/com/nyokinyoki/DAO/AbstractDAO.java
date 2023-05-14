@@ -1,12 +1,10 @@
-package com.nyokinyoki;
+package com.nyokinyoki.DAO;
 
-import java.sql.*;
-import java.util.*;
-
-import com.nyokinyoki.Course.CourseDAO;
-import com.nyokinyoki.Timetable.TimeslotDAO;
-import com.nyokinyoki.Timetable.TimestampDAO;
-import com.nyokinyoki.Timetable.TimetableDAO;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 public sealed abstract class AbstractDAO<T> permits TimetableDAO, CourseDAO, TimeslotDAO, TimestampDAO {
     protected final String url = "jdbc:sqlite:NyokinyokiPirorin.db";

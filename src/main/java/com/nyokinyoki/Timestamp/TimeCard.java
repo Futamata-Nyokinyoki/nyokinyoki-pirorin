@@ -1,10 +1,12 @@
-package com.nyokinyoki.Timetable;
+package com.nyokinyoki.Timestamp;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import com.nyokinyoki.Course.Course;
-
-import java.time.*;
+import com.nyokinyoki.DAO.TimestampDAO;
+import com.nyokinyoki.Timetable.Course;
+import com.nyokinyoki.Timetable.Timeslot;
 
 public class TimeCard {
 

@@ -1,7 +1,7 @@
 package com.nyokinyoki.Timestamp;
 
-import java.time.*;
-import java.time.format.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.nyokinyoki.Timetable.Timeslot;
 
