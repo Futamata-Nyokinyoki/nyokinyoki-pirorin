@@ -1,11 +1,11 @@
 package com.nyokinyoki.Timetable;
 
-import java.time.*;
-import java.util.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import com.nyokinyoki.Attend.AttendStatus;
-import com.nyokinyoki.Course.Course;
-import com.nyokinyoki.Course.CourseDAO;
+import com.nyokinyoki.DAO.CourseDAO;
 import com.nyokinyoki.Timestamp.StampStatus;
 
 public class Timeslot {

@@ -1,20 +1,24 @@
 package com.nyokinyoki;
 
-import org.jline.reader.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.jline.reader.LineReader;
+import org.jline.reader.UserInterruptException;
 
 import com.nyokinyoki.Attend.AttendManager;
-import com.nyokinyoki.Course.Course;
+import com.nyokinyoki.Attend.AttendStatus;
+import com.nyokinyoki.DAO.CourseDAO;
 import com.nyokinyoki.Terminal.UtilizedTerminal;
 import com.nyokinyoki.Timestamp.StampStatus;
-import com.nyokinyoki.Timetable.TimeCard;
+import com.nyokinyoki.Timestamp.TimeCard;
+import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timetable;
-
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 public class App {
     static Timetable timeTable = new Timetable();

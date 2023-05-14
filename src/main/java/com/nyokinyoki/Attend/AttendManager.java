@@ -1,12 +1,16 @@
 package com.nyokinyoki.Attend;
 
-import java.time.*;
-import java.util.*;
-import java.util.stream.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import com.nyokinyoki.Course.Course;
 import com.nyokinyoki.Timestamp.StampStatus;
-import com.nyokinyoki.Timetable.TimeCard;
+import com.nyokinyoki.Timestamp.TimeCard;
+import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timeslot;
 import com.nyokinyoki.Timetable.Timetable;
 

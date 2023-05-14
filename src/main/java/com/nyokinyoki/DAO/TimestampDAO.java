@@ -1,13 +1,17 @@
-package com.nyokinyoki.Timetable;
+package com.nyokinyoki.DAO;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.nyokinyoki.AbstractDAO;
-import com.nyokinyoki.Course.Course;
-
-import java.sql.*;
-import java.time.*;
-import java.time.format.*;
+import com.nyokinyoki.Timetable.Course;
+import com.nyokinyoki.Timetable.Timeslot;
 
 public final class TimestampDAO extends AbstractDAO<LocalDateTime> {
     private static TimestampDAO instance = null;

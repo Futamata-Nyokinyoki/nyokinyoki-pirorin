@@ -1,18 +1,27 @@
 package com.nyokinyoki.Terminal;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.jline.builtins.Completers.RegexCompleter;
-import org.jline.console.*;
-import org.jline.reader.*;
+import org.jline.console.ArgDesc;
+import org.jline.console.CmdDesc;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.Parser;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.StringsCompleter;
-import org.jline.terminal.*;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
-import org.jline.widget.TailTipWidgets.TipType;
 import org.jline.widget.TailTipWidgets;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.*;
+import org.jline.widget.TailTipWidgets.TipType;
 
 public class UtilizedTerminal {
     private static final String syllabus = "syllabus";

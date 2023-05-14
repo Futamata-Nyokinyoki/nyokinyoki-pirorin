@@ -1,11 +1,14 @@
 package com.nyokinyoki.Timetable;
 
-import java.time.*;
-import java.util.*;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.nyokinyoki.Course.Course;
-import com.nyokinyoki.Course.CourseDAO;
+import com.nyokinyoki.DAO.CourseDAO;
+import com.nyokinyoki.DAO.TimetableDAO;
 
 public class Timetable {
     private final List<Course> courses;
