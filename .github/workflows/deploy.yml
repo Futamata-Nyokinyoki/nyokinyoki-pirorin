@@ -31,4 +31,3 @@ jobs:
           git add -f target/
           git commit -am "[bot]"
           git push -f origin release
-          git checkout -
