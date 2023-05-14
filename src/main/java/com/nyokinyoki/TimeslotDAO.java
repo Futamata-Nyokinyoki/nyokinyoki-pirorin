@@ -3,13 +3,21 @@ package com.nyokinyoki;
 import java.sql.*;
 import java.util.*;
 
-public class TimeslotDAO extends AbstractDAO<Timeslot> {
+public final class TimeslotDAO extends AbstractDAO<Timeslot> {
+    private static TimeslotDAO instance = null;
 
-    public TimeslotDAO() {
+    private TimeslotDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS timeslots (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "courseId INTEGER NOT NULL," + "dayOfWeek INTEGER NOT NULL," + "beginPeriod INTEGER NOT NULL,"
                 + "endPeriod INTEGER NOT NULL," + "FOREIGN KEY(id) REFERENCES courses(courseId)" + ");";
         executeUpdate(sql);
+    }
+
+    public static synchronized TimeslotDAO getInstance() {
+        if (instance == null) {
+            instance = new TimeslotDAO();
+        }
+        return instance;
     }
 
     @Override

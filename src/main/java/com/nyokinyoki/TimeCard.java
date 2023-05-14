@@ -4,29 +4,27 @@ import java.util.List;
 import java.time.*;
 
 public class TimeCard {
-    private final TimestampDAO timestampDAO;
 
-    public TimeCard(TimestampDAO timestampDAO) {
-        this.timestampDAO = timestampDAO;
+    public TimeCard() {
     }
 
     public void stamp(LocalDateTime timestamp) {
-        timestampDAO.add(timestamp);
+        TimestampDAO.getInstance().add(timestamp);
     }
 
     public List<LocalDateTime> getAllTimestamps() {
-        return timestampDAO.getAll();
+        return TimestampDAO.getInstance().getAll();
     }
 
     public List<LocalDateTime> getTimestampsByDate(LocalDate date) {
-        return timestampDAO.getByDate(date);
+        return TimestampDAO.getInstance().getByDate(date);
     }
 
     public List<LocalDateTime> getTimestampsByCourse(Course course) {
-        return timestampDAO.getByCourse(course);
+        return TimestampDAO.getInstance().getByCourse(course);
     }
 
     public List<LocalDateTime> getTimestampsByDateAndTimeslot(LocalDate date, Timeslot timeslot) {
-        return timestampDAO.getByDateAndTimeslot(date, timeslot);
+        return TimestampDAO.getInstance().getByDateAndTimeslot(date, timeslot);
     }
 }

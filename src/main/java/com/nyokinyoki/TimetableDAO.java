@@ -3,12 +3,20 @@ package com.nyokinyoki;
 import java.sql.*;
 import java.util.*;
 
-public class TimetableDAO extends AbstractDAO<Course> {
+public final class TimetableDAO extends AbstractDAO<Course> {
+    private static TimetableDAO instance = null;
 
-    public TimetableDAO() {
+    private TimetableDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS timetable (" + "courseId INTEGER PRIMARY KEY,"
                 + "FOREIGN KEY(courseId) REFERENCES courses(id)" + ");";
         executeUpdate(sql);
+    }
+
+    public static synchronized TimetableDAO getInstance() {
+        if (instance == null) {
+            instance = new TimetableDAO();
+        }
+        return instance;
     }
 
     @Override
@@ -21,7 +29,7 @@ public class TimetableDAO extends AbstractDAO<Course> {
 
             while (resultSet.next()) {
                 int courseId = resultSet.getInt("courseId");
-                Course course = new CourseDAO().getById(courseId);
+                Course course = CourseDAO.getInstance().getById(courseId);
                 courses.add(course);
             }
 

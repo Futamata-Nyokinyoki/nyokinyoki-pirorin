@@ -3,7 +3,7 @@ package com.nyokinyoki;
 import java.sql.*;
 import java.util.*;
 
-public abstract class AbstractDAO<T> {
+public sealed abstract class AbstractDAO<T> permits TimetableDAO, CourseDAO, TimeslotDAO, TimestampDAO {
     protected final String url = "jdbc:sqlite:NyokinyokiPirorin.db";
 
     static {
