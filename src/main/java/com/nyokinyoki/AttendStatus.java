@@ -53,8 +53,8 @@ public class AttendStatus {
             statusDescription = "Unknown";
         }
 
-        return "AttendStatus{" + "date=" + date + ", courseId=" + timeSlot.getCourse().getId() + ", course="
-                + timeSlot.getCourse().getCourseName() + ", timeSlot=" + timeSlot + ", status=" + statusDescription
-                + '}';
+        return "AttendStatus{" + "date=" + date + ", courseId=" + timeSlot.getCourse().getId() + ", courseName='"
+                + timeSlot.getCourse().getCourseName() + "', timeSlot=" + timeSlot + ", status='" + statusDescription
+                + "'}";
     }
 }

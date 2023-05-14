@@ -11,7 +11,6 @@ public class IntegrationTest {
     private static AttendManager attendanceManager = new AttendManager(timeTable, timeCard);
 
     public static void main(String[] args) {
-
         while (true) {
             System.out.println("0. Exit");
             System.out.println("1. Show registered courses");
@@ -129,6 +128,10 @@ public class IntegrationTest {
         System.out.print("Enter course id: ");
         int id = Integer.parseInt(System.console().readLine());
         Course course = new CourseDAO().getById(id);
+        if (course == null) {
+            System.out.println("Course not found");
+            return;
+        }
         List<AttendStatus> attendStatuses = attendanceManager.getAttendStatusesByCourse(course);
         for (AttendStatus status : attendStatuses) {
             System.out.println(status);

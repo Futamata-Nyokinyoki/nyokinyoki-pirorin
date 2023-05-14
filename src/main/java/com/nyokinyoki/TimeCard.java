@@ -22,14 +22,6 @@ public class TimeCard {
         return timestampDAO.getByDate(date);
     }
 
-    public List<LocalDateTime> getTimestampsByDayOfWeek(DayOfWeek dayOfWeek) {
-        return timestampDAO.getByDayOfWeek(dayOfWeek);
-    }
-
-    public List<LocalDateTime> getTimestampsByTimeSlot(TimeSlot timeSlot) {
-        return timestampDAO.getByTimeSlot(timeSlot);
-    }
-
     public List<LocalDateTime> getTimestampsByCourse(Course course) {
         return timestampDAO.getByCourse(course);
     }

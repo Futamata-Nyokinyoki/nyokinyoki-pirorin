@@ -19,9 +19,9 @@ public class AttendManager {
         if (optionalTimeSlot.isPresent()) {
             TimeSlot timeSlot = optionalTimeSlot.get();
             int status = timeSlot.getStampStatus(timestamp);
-            return new StampStatus(status, timeSlot);
+            return new StampStatus(timestamp, status, timeSlot);
         } else {
-            return new StampStatus(StampStatus.OUT_INVALID, null);
+            return new StampStatus(timestamp, StampStatus.OUT_INVALID, null);
         }
     }
 
@@ -33,9 +33,9 @@ public class AttendManager {
             if (optionalTimeSlot.isPresent()) {
                 TimeSlot timeSlot = optionalTimeSlot.get();
                 int status = timeSlot.getStampStatus(timestamp);
-                stampStatuses.add(new StampStatus(status, timeSlot));
+                stampStatuses.add(new StampStatus(timestamp, status, timeSlot));
             } else {
-                stampStatuses.add(new StampStatus(StampStatus.OUT_INVALID, null));
+                stampStatuses.add(new StampStatus(timestamp, StampStatus.OUT_INVALID, null));
             }
         }
         return stampStatuses;
@@ -49,9 +49,9 @@ public class AttendManager {
             if (optionalTimeSlot.isPresent()) {
                 TimeSlot timeSlot = optionalTimeSlot.get();
                 int status = timeSlot.getStampStatus(timestamp);
-                stampStatuses.add(new StampStatus(status, timeSlot));
+                stampStatuses.add(new StampStatus(timestamp, status, timeSlot));
             } else {
-                stampStatuses.add(new StampStatus(StampStatus.OUT_INVALID, null));
+                stampStatuses.add(new StampStatus(timestamp, StampStatus.OUT_INVALID, null));
             }
         }
         return stampStatuses;
@@ -67,12 +67,6 @@ public class AttendManager {
         } else {
             return new AttendStatus(date, null, AttendStatus.ABSENT);
         }
-    }
-
-    public AttendStatus getAttendStatusByDateAndTimeSlot(LocalDate date, TimeSlot timeSlot) {
-        List<LocalDateTime> timestamps = timeCard.getTimestampsByDateAndTimeSlot(date, timeSlot);
-        int status = timeSlot.getAttendStatus(timestamps);
-        return new AttendStatus(date, timeSlot, status);
     }
 
     public List<AttendStatus> getAttendStatusesByDate(LocalDate date) {
@@ -98,7 +92,7 @@ public class AttendManager {
         for (Map.Entry<LocalDate, List<LocalDateTime>> entry : groupedByDate.entrySet()) {
             LocalDate date = entry.getKey();
             List<LocalDateTime> timestampsByDate = entry.getValue();
-            List<TimeSlot> timeSlots = timeTable.getTimeSlotsByDayOfWeek(date.getDayOfWeek());
+            List<TimeSlot> timeSlots = course.getTimeSlots();
             for (TimeSlot timeSlot : timeSlots) {
                 int status = timeSlot.getAttendStatus(timestampsByDate);
                 attendStatuses.add(new AttendStatus(date, timeSlot, status));
