@@ -5,7 +5,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.*;
 
-public class TimestampDAO extends AbstractDAO<LocalDateTime> {
+public final class TimestampDAO extends AbstractDAO<LocalDateTime> {
     private static TimestampDAO instance = null;
 
     private TimestampDAO() {

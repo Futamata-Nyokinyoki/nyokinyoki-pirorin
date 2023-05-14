@@ -3,7 +3,7 @@ package com.nyokinyoki;
 import java.sql.*;
 import java.util.*;
 
-public class TimetableDAO extends AbstractDAO<Course> {
+public final class TimetableDAO extends AbstractDAO<Course> {
     private static TimetableDAO instance = null;
 
     private TimetableDAO() {

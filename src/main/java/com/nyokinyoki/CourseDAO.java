@@ -4,7 +4,7 @@ import java.util.*;
 import java.sql.*;
 import java.util.stream.*;
 
-public class CourseDAO extends AbstractDAO<Course> {
+public final class CourseDAO extends AbstractDAO<Course> {
 
     private static CourseDAO instance = null;
 
