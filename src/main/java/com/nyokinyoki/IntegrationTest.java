@@ -6,8 +6,8 @@ import java.time.format.*;;
 
 public class IntegrationTest {
 
-    private static Timetable timetable = new Timetable(new TimetableDAO(), new CourseDAO());
-    private static TimeCard timeCard = new TimeCard(new TimestampDAO());
+    private static Timetable timetable = new Timetable();
+    private static TimeCard timeCard = new TimeCard();
     private static AttendManager attendanceManager = new AttendManager(timetable, timeCard);
 
     public static void main(String[] args) {
@@ -127,7 +127,7 @@ public class IntegrationTest {
     private static void showAttendHistoryByCourse() {
         System.out.print("Enter course id: ");
         int id = Integer.parseInt(System.console().readLine());
-        Course course = new CourseDAO().getById(id);
+        Course course = CourseDAO.getInstance().getById(id);
         if (course == null) {
             System.out.println("Course not found");
             return;

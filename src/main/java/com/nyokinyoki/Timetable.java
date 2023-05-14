@@ -6,13 +6,9 @@ import java.util.stream.Collectors;
 
 public class Timetable {
     private final List<Course> courses;
-    private final TimetableDAO timetableDAO;
-    private final CourseDAO courseDAO;
 
-    public Timetable(TimetableDAO timetableDAO, CourseDAO courseDAO) {
-        this.timetableDAO = timetableDAO;
-        this.courseDAO = courseDAO;
-        this.courses = timetableDAO.getAll();
+    public Timetable() {
+        this.courses = TimetableDAO.getInstance().getAll();
     }
 
     public List<Course> getCourses() {
@@ -24,21 +20,21 @@ public class Timetable {
             throw new IllegalArgumentException("Course is not available");
         }
 
-        timetableDAO.add(course);
+        TimetableDAO.getInstance().add(course);
         courses.add(course);
     }
 
     public void addCourse(int id) {
-        addCourse(courseDAO.getById(id));
+        addCourse(CourseDAO.getInstance().getById(id));
     }
 
     public void removeCourse(Course course) {
-        timetableDAO.remove(course.getId());
+        TimetableDAO.getInstance().remove(course.getId());
         courses.removeIf(c -> c.equals(course));
     }
 
     public void removeCourse(int id) {
-        removeCourse(courseDAO.getById(id));
+        removeCourse(CourseDAO.getInstance().getById(id));
     }
 
     public Optional<Timeslot> getOngoingTimeslot(LocalDateTime timestamp) {
@@ -52,11 +48,11 @@ public class Timetable {
     }
 
     public List<Course> getAvailableCourses() {
-        return courseDAO.getAll().stream().filter(this::isAvailable).collect(Collectors.toList());
+        return CourseDAO.getInstance().getAll().stream().filter(this::isAvailable).collect(Collectors.toList());
     }
 
     public List<Course> getAvailableCoursesByPeriod(int dayOfWeek, int beginPeriod) {
-        return courseDAO.getByPeriod(dayOfWeek, beginPeriod).stream().filter(this::isAvailable)
+        return CourseDAO.getInstance().getByPeriod(dayOfWeek, beginPeriod).stream().filter(this::isAvailable)
                 .collect(Collectors.toList());
     }
 

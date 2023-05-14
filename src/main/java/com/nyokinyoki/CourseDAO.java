@@ -5,13 +5,20 @@ import java.sql.*;
 import java.util.stream.*;
 
 public class CourseDAO extends AbstractDAO<Course> {
-    private final TimeslotDAO timeslotDAO;
 
-    public CourseDAO() {
-        timeslotDAO = new TimeslotDAO();
+    private static CourseDAO instance = null;
+
+    private CourseDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS courses (" + "id INTEGER PRIMARY KEY," + "courseName TEXT NOT NULL"
                 + ");";
         executeUpdate(sql);
+    }
+
+    public static synchronized CourseDAO getInstance() {
+        if (instance == null) {
+            instance = new CourseDAO();
+        }
+        return instance;
     }
 
     @Override
@@ -27,7 +34,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 int id = resultSet.getInt("id");
                 String courseName = resultSet.getString("courseName");
 
-                courses.add(new Course(id, courseName, timeslotDAO));
+                courses.add(new Course(id, courseName));
             }
 
             return courses;
@@ -85,7 +92,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 if (resultSet.next()) {
                     String courseName = resultSet.getString("courseName");
 
-                    return new Course(id, courseName, timeslotDAO);
+                    return new Course(id, courseName);
                 } else {
                     return null;
                 }
@@ -96,7 +103,7 @@ public class CourseDAO extends AbstractDAO<Course> {
     }
 
     public List<Course> getByPeriod(int dayOfWeek, int beginPeriod) {
-        List<Timeslot> timeslots = timeslotDAO.getByPeriod(dayOfWeek, beginPeriod);
+        List<Timeslot> timeslots = TimeslotDAO.getInstance().getByPeriod(dayOfWeek, beginPeriod);
 
         return timeslots.stream().map(timeslot -> getById(timeslot.getCourseId())).filter(Objects::nonNull)
                 .collect(Collectors.toList());

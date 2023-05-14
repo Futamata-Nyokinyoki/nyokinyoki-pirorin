@@ -14,59 +14,16 @@ public class AttendManager {
     }
 
     public StampStatus getStampStatus(LocalDateTime timestamp) {
-        Optional<Timeslot> optionalTimeslot = timetable.getOngoingTimeslot(timestamp);
-
-        if (optionalTimeslot.isPresent()) {
-            Timeslot timeslot = optionalTimeslot.get();
-            int status = timeslot.getStampStatus(timestamp);
-            return new StampStatus(timestamp, status, timeslot);
-        } else {
-            return new StampStatus(timestamp, StampStatus.OUT_INVALID, null);
-        }
+        return getStampStatusFromTimestamp(timestamp);
     }
 
     public List<StampStatus> getAllStampStatuses() {
-        List<StampStatus> stampStatuses = new ArrayList<>();
-        List<LocalDateTime> timestamps = timeCard.getAllTimestamps();
-        for (LocalDateTime timestamp : timestamps) {
-            Optional<Timeslot> optionalTimeslot = timetable.getOngoingTimeslot(timestamp);
-            if (optionalTimeslot.isPresent()) {
-                Timeslot timeslot = optionalTimeslot.get();
-                int status = timeslot.getStampStatus(timestamp);
-                stampStatuses.add(new StampStatus(timestamp, status, timeslot));
-            } else {
-                stampStatuses.add(new StampStatus(timestamp, StampStatus.OUT_INVALID, null));
-            }
-        }
-        return stampStatuses;
+        return timeCard.getAllTimestamps().stream().map(this::getStampStatusFromTimestamp).collect(Collectors.toList());
     }
 
     public List<StampStatus> getStampStatusesByDate(LocalDate date) {
-        List<StampStatus> stampStatuses = new ArrayList<>();
-        List<LocalDateTime> timestamps = timeCard.getTimestampsByDate(date);
-        for (LocalDateTime timestamp : timestamps) {
-            Optional<Timeslot> optionalTimeslot = timetable.getOngoingTimeslot(timestamp);
-            if (optionalTimeslot.isPresent()) {
-                Timeslot timeslot = optionalTimeslot.get();
-                int status = timeslot.getStampStatus(timestamp);
-                stampStatuses.add(new StampStatus(timestamp, status, timeslot));
-            } else {
-                stampStatuses.add(new StampStatus(timestamp, StampStatus.OUT_INVALID, null));
-            }
-        }
-        return stampStatuses;
-    }
-
-    public AttendStatus getAttendStatusByOngoingTimeslot(List<LocalDateTime> timestamps) {
-        LocalDate date = timestamps.get(0).toLocalDate();
-        Optional<Timeslot> optionalTimeslot = timetable.getOngoingTimeslot(timestamps.get(0));
-        if (optionalTimeslot.isPresent()) {
-            Timeslot timeslot = optionalTimeslot.get();
-            int status = timeslot.getAttendStatus(timestamps);
-            return new AttendStatus(date, timeslot, status);
-        } else {
-            return new AttendStatus(date, null, AttendStatus.ABSENT);
-        }
+        return timeCard.getTimestampsByDate(date).stream().map(this::getStampStatusFromTimestamp)
+                .collect(Collectors.toList());
     }
 
     public List<AttendStatus> getAttendStatusesByDate(LocalDate date) {
@@ -74,7 +31,6 @@ public class AttendManager {
         List<Timeslot> timeslots = timetable.getTimeslotsByDayOfWeek(date.getDayOfWeek());
         for (Timeslot timeslot : timeslots) {
             List<LocalDateTime> timestamps = timeCard.getTimestampsByDateAndTimeslot(date, timeslot);
-
             int status = timeslot.getAttendStatus(timestamps);
             attendStatuses.add(new AttendStatus(date, timeslot, status));
         }
@@ -99,5 +55,16 @@ public class AttendManager {
             }
         }
         return attendStatuses;
+    }
+
+    private StampStatus getStampStatusFromTimestamp(LocalDateTime timestamp) {
+        Optional<Timeslot> optionalTimeslot = timetable.getOngoingTimeslot(timestamp);
+        if (optionalTimeslot.isPresent()) {
+            Timeslot timeslot = optionalTimeslot.get();
+            int status = timeslot.getStampStatus(timestamp);
+            return new StampStatus(timestamp, status, timeslot);
+        } else {
+            return new StampStatus(timestamp, StampStatus.OUT_INVALID, null);
+        }
     }
 }

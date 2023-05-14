@@ -53,7 +53,7 @@ public class Timeslot {
     }
 
     public Course getCourse() {
-        return new CourseDAO().getById(courseId);
+        return CourseDAO.getInstance().getById(courseId);
     }
 
     public boolean overlapsWith(Timeslot other) {

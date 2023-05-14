@@ -9,10 +9,10 @@ public class Course {
     private final String courseName;
     private final List<Timeslot> timeslots;
 
-    public Course(int id, String courseName, TimeslotDAO timeslotDAO) {
+    public Course(int id, String courseName) {
         this.id = id;
         this.courseName = courseName;
-        this.timeslots = timeslotDAO.getByCourseId(id);
+        this.timeslots = TimeslotDAO.getInstance().getByCourseId(id);
     }
 
     public int getId() {

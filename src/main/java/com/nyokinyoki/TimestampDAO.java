@@ -6,11 +6,19 @@ import java.time.*;
 import java.time.format.*;
 
 public class TimestampDAO extends AbstractDAO<LocalDateTime> {
+    private static TimestampDAO instance = null;
 
-    public TimestampDAO() {
+    private TimestampDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS timestamps (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "timestamp TEXT NOT NULL)";
         executeUpdate(sql);
+    }
+
+    public static synchronized TimestampDAO getInstance() {
+        if (instance == null) {
+            instance = new TimestampDAO();
+        }
+        return instance;
     }
 
     @Override
