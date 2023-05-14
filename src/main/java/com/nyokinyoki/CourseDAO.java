@@ -1,19 +1,14 @@
-package com.nyokinyoki.TimeTable.Course;
+package com.nyokinyoki;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import com.nyokinyoki.AbstractDAO;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlotDAO;
-
 import java.sql.*;
+import java.util.stream.*;
 
 public class CourseDAO extends AbstractDAO<Course> {
-    private final TimeSlotDAO timeSlotDAO;
+    private final TimeslotDAO timeslotDAO;
 
     public CourseDAO() {
-        timeSlotDAO = new TimeSlotDAO();
+        timeslotDAO = new TimeslotDAO();
         String sql = "CREATE TABLE IF NOT EXISTS courses (" + "id INTEGER PRIMARY KEY," + "courseName TEXT NOT NULL"
                 + ");";
         executeUpdate(sql);
@@ -21,7 +16,7 @@ public class CourseDAO extends AbstractDAO<Course> {
 
     @Override
     public List<Course> getAll() {
-        String sql = "SELECT * FROM courses;";
+        String sql = "SELECT * FROM courses ORDER BY id ASC;";
 
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -32,7 +27,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 int id = resultSet.getInt("id");
                 String courseName = resultSet.getString("courseName");
 
-                courses.add(new Course(id, courseName, timeSlotDAO));
+                courses.add(new Course(id, courseName, timeslotDAO));
             }
 
             return courses;
@@ -90,7 +85,7 @@ public class CourseDAO extends AbstractDAO<Course> {
                 if (resultSet.next()) {
                     String courseName = resultSet.getString("courseName");
 
-                    return new Course(id, courseName, timeSlotDAO);
+                    return new Course(id, courseName, timeslotDAO);
                 } else {
                     return null;
                 }
@@ -101,9 +96,9 @@ public class CourseDAO extends AbstractDAO<Course> {
     }
 
     public List<Course> getByPeriod(int dayOfWeek, int beginPeriod) {
-        List<TimeSlot> timeSlots = timeSlotDAO.getByPeriod(dayOfWeek, beginPeriod);
+        List<Timeslot> timeslots = timeslotDAO.getByPeriod(dayOfWeek, beginPeriod);
 
-        return timeSlots.stream().map(timeSlot -> getById(timeSlot.getCourseId())).filter(Objects::nonNull)
+        return timeslots.stream().map(timeslot -> getById(timeslot.getCourseId())).filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

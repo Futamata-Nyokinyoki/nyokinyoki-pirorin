@@ -1,31 +1,30 @@
 package com.nyokinyoki;
 
+import java.util.*;
 import java.sql.*;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.*;
 
-import com.nyokinyoki.TimeTable.Course.*;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
 public class TimestampDAO extends AbstractDAO<LocalDateTime> {
 
     public TimestampDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS timestamps (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "timestamp INTEGER NOT NULL)";
+                + "timestamp TEXT NOT NULL)";
         executeUpdate(sql);
     }
 
     @Override
     public List<LocalDateTime> getAll() {
-        String sql = "SELECT * FROM timestamps";
+        String sql = "SELECT * FROM timestamps ORDER BY timestamp ASC";
 
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()) {
+
             List<LocalDateTime> timestamps = new ArrayList<>();
             while (resultSet.next()) {
-                Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                LocalDateTime localDateTime = timestamp.toLocalDateTime();
+                String timestamp = resultSet.getString("timestamp");
+                LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 timestamps.add(localDateTime);
             }
             return timestamps;
@@ -39,7 +38,7 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
         String sql = "INSERT INTO timestamps (timestamp) VALUES (?)";
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setTimestamp(1, Timestamp.valueOf(localDateTime));
+            statement.setString(1, localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to add timestamp", e);
@@ -69,111 +68,88 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
         }
     }
 
-    public List<LocalDateTime> getByDate(LocalDateTime date) {
-        String sql = "SELECT * FROM timestamps WHERE strftime('%w', timestamp) = ?";
+    public List<LocalDateTime> getByDate(LocalDate date) {
+        String sql = "SELECT * FROM timestamps WHERE strftime('%w', date(timestamp) = ? ORDER BY timestamp ASC";
 
-        int dayOfWeek = date.getDayOfWeek().getValue() % 7; // Converting Java's DayOfWeek (1=Monday,...) to SQLite's
-                                                            // (0=Sunday,...)
+        int dayOfWeek = date.getDayOfWeek().getValue() % 7;
 
         List<LocalDateTime> timestamps = new ArrayList<>();
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, dayOfWeek);
+            statement.setString(1, date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
+                    String timestamp = resultSet.getString("timestamp");
+                    LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                     timestamps.add(localDateTime);
                 }
+                return timestamps;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get timestamps for day of week: " + dayOfWeek, e);
         }
-
-        return timestamps;
-    }
-
-    public List<LocalDateTime> getByDayOfWeek(DayOfWeek dayOfWeek) {
-        String sql = "SELECT * FROM timestamps WHERE strftime('%w', timestamp) = ?";
-        List<LocalDateTime> timestamps = new ArrayList<>();
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            int sqliteDayOfWeek = dayOfWeek.getValue() % 7;
-            statement.setInt(1, sqliteDayOfWeek);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-                    timestamps.add(localDateTime);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to get timestamps for day of week: " + dayOfWeek, e);
-        }
-
-        return timestamps;
-    }
-
-    public List<LocalDateTime> getByTimeSlot(TimeSlot timeSlot) {
-        String sql = "SELECT * FROM timestamps WHERE strftime('%w', timestamp) = ? AND time(timestamp) BETWEEN time(?) AND time(?)";
-
-        int dayOfWeek = timeSlot.getDayOfWeek();
-        LocalDateTime startStampTimeStart = timeSlot.getStartStampTimeStart();
-        LocalDateTime endStampTimeEnd = timeSlot.getEndStampTimeEnd();
-
-        List<LocalDateTime> timestamps = new ArrayList<>();
-
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, dayOfWeek);
-            statement.setString(2, startStampTimeStart.toLocalTime().toString());
-            statement.setString(3, endStampTimeEnd.toLocalTime().toString());
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-                    timestamps.add(localDateTime);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to get timestamps for time slot: " + timeSlot, e);
-        }
-
-        return timestamps;
     }
 
     public List<LocalDateTime> getByCourse(Course course) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM timestamps WHERE ");
 
-        for (int i = 0; i < course.getTimeSlots().size(); i++) {
+        for (int i = 0; i < course.getTimeslots().size(); i++) {
             if (i > 0) {
                 sqlBuilder.append(" OR ");
             }
-            sqlBuilder.append("(strftime('%w', timestamp) = ? AND strftime('%H:%M', timestamp) BETWEEN ? AND ?)");
+            sqlBuilder.append("( time(timestamp) BETWEEN time(?) AND time(?))");
         }
+        sqlBuilder.append(" ORDER BY timestamp ASC");
 
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString())) {
             int index = 1;
-            for (TimeSlot timeSlot : course.getTimeSlots()) {
-                statement.setInt(index++, timeSlot.getDayOfWeek());
-                statement.setString(index++, timeSlot.getStartStampTimeStart().toLocalTime().toString());
-                statement.setString(index++, timeSlot.getEndStampTimeEnd().toLocalTime().toString());
+            for (Timeslot timeslot : course.getTimeslots()) {
+                statement.setString(index++, timeslot.getStartStampTimeStart().toLocalTime()
+                        .format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                statement.setString(index++,
+                        timeslot.getEndStampTimeEnd().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<LocalDateTime> timestamps = new ArrayList<>();
                 while (resultSet.next()) {
-                    Timestamp timestamp = resultSet.getTimestamp("timestamp");
-                    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-                    timestamps.add(localDateTime);
+                    String timestamp = resultSet.getString("timestamp");
+                    LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    for (Timeslot timeslot : course.getTimeslots()) {
+                        if (timeslot.getDayOfWeek() == localDateTime.getDayOfWeek().getValue()) {
+                            timestamps.add(localDateTime);
+                        }
+                    }
                 }
                 return timestamps;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get timestamps for course " + course.getId(), e);
         }
+    }
+
+    public List<LocalDateTime> getByDateAndTimeslot(LocalDate date, Timeslot timeslot) {
+        String sql = "SELECT * FROM timestamps WHERE date(timestamp) = ? AND time(timestamp) BETWEEN time(?) AND time(?) ORDER BY timestamp ASC";
+
+        List<LocalDateTime> timestamps = new ArrayList<>();
+
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, date.toString());
+            statement.setString(2, timeslot.getStartStampTimeStart().toLocalTime().toString());
+            statement.setString(3, timeslot.getEndStampTimeEnd().toLocalTime().toString());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String timestamp = resultSet.getString("timestamp");
+                    LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    timestamps.add(localDateTime);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get timestamps for date and time slot: " + date + " " + timeslot, e);
+        }
+        return timestamps;
     }
 }

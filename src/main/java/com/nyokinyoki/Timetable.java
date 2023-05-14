@@ -1,23 +1,18 @@
-package com.nyokinyoki.TimeTable;
+package com.nyokinyoki;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.nyokinyoki.TimeTable.Course.Course;
-import com.nyokinyoki.TimeTable.Course.CourseDAO;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.TimeSlot;
-
-public class TimeTable {
+public class Timetable {
     private final List<Course> courses;
-    private final TimeTableDAO timeTableDAO;
+    private final TimetableDAO timetableDAO;
     private final CourseDAO courseDAO;
 
-    public TimeTable(TimeTableDAO timeTableDAO, CourseDAO courseDAO) {
-        this.timeTableDAO = timeTableDAO;
+    public Timetable(TimetableDAO timetableDAO, CourseDAO courseDAO) {
+        this.timetableDAO = timetableDAO;
         this.courseDAO = courseDAO;
-        this.courses = timeTableDAO.getAll();
+        this.courses = timetableDAO.getAll();
     }
 
     public List<Course> getCourses() {
@@ -29,7 +24,7 @@ public class TimeTable {
             throw new IllegalArgumentException("Course is not available");
         }
 
-        timeTableDAO.add(course);
+        timetableDAO.add(course);
         courses.add(course);
     }
 
@@ -38,7 +33,7 @@ public class TimeTable {
     }
 
     public void removeCourse(Course course) {
-        timeTableDAO.remove(course.getId());
+        timetableDAO.remove(course.getId());
         courses.removeIf(c -> c.equals(course));
     }
 
@@ -46,13 +41,13 @@ public class TimeTable {
         removeCourse(courseDAO.getById(id));
     }
 
-    public TimeSlot getOngoingTimeSlot(LocalDateTime timestamp) {
-        return courses.stream().map(course -> course.getOngoingTimeSlot(timestamp)).filter(Objects::nonNull).findFirst()
-                .orElse(null);
+    public Optional<Timeslot> getOngoingTimeslot(LocalDateTime timestamp) {
+        return courses.stream().map(course -> course.getOngoingTimeslot(timestamp)).filter(Objects::nonNull)
+                .findFirst();
     }
 
-    public List<TimeSlot> getTimeSlotsByDayOfWeek(DayOfWeek dayOfWeek) {
-        return courses.stream().flatMap(course -> course.getTimeSlotsByDayOfWeek(dayOfWeek).stream())
+    public List<Timeslot> getTimeslotsByDayOfWeek(DayOfWeek dayOfWeek) {
+        return courses.stream().flatMap(course -> course.getTimeslotsByDayOfWeek(dayOfWeek).stream())
                 .collect(Collectors.toList());
     }
 

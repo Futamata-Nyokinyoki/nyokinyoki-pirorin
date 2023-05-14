@@ -1,11 +1,7 @@
 package com.nyokinyoki;
 
 import java.util.List;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-
-import com.nyokinyoki.TimeTable.Course.*;
-import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
+import java.time.*;
 
 public class TimeCard {
     private final TimestampDAO timestampDAO;
@@ -18,19 +14,19 @@ public class TimeCard {
         timestampDAO.add(timestamp);
     }
 
-    public List<LocalDateTime> getTimestampsByDate(LocalDateTime date) {
+    public List<LocalDateTime> getAllTimestamps() {
+        return timestampDAO.getAll();
+    }
+
+    public List<LocalDateTime> getTimestampsByDate(LocalDate date) {
         return timestampDAO.getByDate(date);
-    }
-
-    public List<LocalDateTime> getTimestampsByDayOfWeek(DayOfWeek dayOfWeek) {
-        return timestampDAO.getByDayOfWeek(dayOfWeek);
-    }
-
-    public List<LocalDateTime> getTimestampsByTimeSlot(TimeSlot timeSlot) {
-        return timestampDAO.getByTimeSlot(timeSlot);
     }
 
     public List<LocalDateTime> getTimestampsByCourse(Course course) {
         return timestampDAO.getByCourse(course);
+    }
+
+    public List<LocalDateTime> getTimestampsByDateAndTimeslot(LocalDate date, Timeslot timeslot) {
+        return timestampDAO.getByDateAndTimeslot(date, timeslot);
     }
 }

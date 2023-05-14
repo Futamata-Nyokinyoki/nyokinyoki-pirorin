@@ -1,11 +1,11 @@
 package com.nyokinyoki;
 
-import com.nyokinyoki.TimeTable.Course.TimeSlot.*;
+import java.time.*;
 
 public class AttendStatus {
-    private final TimeSlot timeSlot;
+    private final LocalDate date;
+    private final Timeslot timeslot;
     private final int status;
-
 
     public static final int START_STAMP = 1;
     public static final int END_STAMP = 2;
@@ -15,13 +15,18 @@ public class AttendStatus {
     public static final int LATE = END_STAMP;
     public static final int PRESENT = START_STAMP + END_STAMP;
 
-    public AttendStatus(TimeSlot timeSlot, int status) {
-        this.timeSlot = timeSlot;
+    public AttendStatus(LocalDate date, Timeslot timeslot, int status) {
+        this.date = date;
+        this.timeslot = timeslot;
         this.status = status;
     }
 
-    public TimeSlot getTimeSlot() {
-        return timeSlot;
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Timeslot getTimeslot() {
+        return timeslot;
     }
 
     public int getStatus() {
@@ -45,10 +50,11 @@ public class AttendStatus {
             statusDescription = "Present";
             break;
         default:
-            statusDescription = "Unknown Status";
+            statusDescription = "Unknown";
         }
 
-        return "AttendStatus {" + "timeSlot=" + timeSlot + ", status=" + statusDescription + '}';
+        return "AttendStatus{" + "date=" + date + ", courseId=" + timeslot.getCourse().getId() + ", courseName='"
+                + timeslot.getCourse().getCourseName() + "', timeslot=" + timeslot + ", status='" + statusDescription
+                + "'}";
     }
-
 }
