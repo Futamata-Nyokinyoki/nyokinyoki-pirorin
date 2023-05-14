@@ -9,7 +9,7 @@ public final class TimeslotDAO extends AbstractDAO<Timeslot> {
     private TimeslotDAO() {
         String sql = "CREATE TABLE IF NOT EXISTS timeslots (" + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "courseId INTEGER NOT NULL," + "dayOfWeek INTEGER NOT NULL," + "beginPeriod INTEGER NOT NULL,"
-                + "endPeriod INTEGER NOT NULL," + "FOREIGN KEY(id) REFERENCES courses(courseId)" + ");";
+                + "endPeriod INTEGER NOT NULL," + "FOREIGN KEY(courseId) REFERENCES courses(id)" + ");";
         executeUpdate(sql);
     }
 
