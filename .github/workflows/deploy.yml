@@ -29,5 +29,5 @@ jobs:
           git config user.email github-actions@github.com
           git switch -c release
           git add -f target/
-          git commit -m "[bot]"
-          git checkout -
+          git commit -am "[bot]"
+          git push -f origin release
