@@ -3,7 +3,7 @@ package com.nyokinyoki;
 import java.time.*;
 import java.util.*;
 
-public class TimeSlot {
+public class Timeslot {
     private final int id;
     private final int courseId;
     private final int dayOfWeek;
@@ -20,7 +20,7 @@ public class TimeSlot {
     public static final int STAMP_START_DURATION_MINUTES = 10;
     public static final int STAMP_END_DURATION_MINUTES = 10;
 
-    public TimeSlot(int id, int courseId, int dayOfWeek, int beginPeriod, int endPeriod) {
+    public Timeslot(int id, int courseId, int dayOfWeek, int beginPeriod, int endPeriod) {
         if (endPeriod < beginPeriod) {
             throw new IllegalArgumentException("End period must be greater than or equal to begin period.");
         }
@@ -56,7 +56,7 @@ public class TimeSlot {
         return new CourseDAO().getById(courseId);
     }
 
-    public boolean overlapsWith(TimeSlot other) {
+    public boolean overlapsWith(Timeslot other) {
         if (dayOfWeek != other.dayOfWeek) {
             return false;
         }
@@ -66,7 +66,7 @@ public class TimeSlot {
 
     @Override
     public String toString() {
-        return String.format("TimeSlot {dayOfWeek=%d, beginPeriod=%d, endPeriod=%d}", dayOfWeek, beginPeriod,
+        return String.format("Timeslot {dayOfWeek=%d, beginPeriod=%d, endPeriod=%d}", dayOfWeek, beginPeriod,
                 endPeriod);
     }
 

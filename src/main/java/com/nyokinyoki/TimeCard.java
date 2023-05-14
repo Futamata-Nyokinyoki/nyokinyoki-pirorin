@@ -26,7 +26,7 @@ public class TimeCard {
         return timestampDAO.getByCourse(course);
     }
 
-    public List<LocalDateTime> getTimestampsByDateAndTimeSlot(LocalDate date, TimeSlot timeSlot) {
-        return timestampDAO.getByDateAndTimeSlot(date, timeSlot);
+    public List<LocalDateTime> getTimestampsByDateAndTimeslot(LocalDate date, Timeslot timeslot) {
+        return timestampDAO.getByDateAndTimeslot(date, timeslot);
     }
 }

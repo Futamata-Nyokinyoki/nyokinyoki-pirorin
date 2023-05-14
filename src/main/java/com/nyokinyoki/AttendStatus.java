@@ -4,7 +4,7 @@ import java.time.*;
 
 public class AttendStatus {
     private final LocalDate date;
-    private final TimeSlot timeSlot;
+    private final Timeslot timeslot;
     private final int status;
 
     public static final int START_STAMP = 1;
@@ -15,9 +15,9 @@ public class AttendStatus {
     public static final int LATE = END_STAMP;
     public static final int PRESENT = START_STAMP + END_STAMP;
 
-    public AttendStatus(LocalDate date, TimeSlot timeSlot, int status) {
+    public AttendStatus(LocalDate date, Timeslot timeslot, int status) {
         this.date = date;
-        this.timeSlot = timeSlot;
+        this.timeslot = timeslot;
         this.status = status;
     }
 
@@ -25,8 +25,8 @@ public class AttendStatus {
         return date;
     }
 
-    public TimeSlot getTimeSlot() {
-        return timeSlot;
+    public Timeslot getTimeslot() {
+        return timeslot;
     }
 
     public int getStatus() {
@@ -53,8 +53,8 @@ public class AttendStatus {
             statusDescription = "Unknown";
         }
 
-        return "AttendStatus{" + "date=" + date + ", courseId=" + timeSlot.getCourse().getId() + ", courseName='"
-                + timeSlot.getCourse().getCourseName() + "', timeSlot=" + timeSlot + ", status='" + statusDescription
+        return "AttendStatus{" + "date=" + date + ", courseId=" + timeslot.getCourse().getId() + ", courseName='"
+                + timeslot.getCourse().getCourseName() + "', timeslot=" + timeslot + ", status='" + statusDescription
                 + "'}";
     }
 }

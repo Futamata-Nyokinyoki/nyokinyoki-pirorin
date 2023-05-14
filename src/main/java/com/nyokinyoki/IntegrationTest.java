@@ -6,9 +6,9 @@ import java.time.format.*;;
 
 public class IntegrationTest {
 
-    private static TimeTable timeTable = new TimeTable(new TimeTableDAO(), new CourseDAO());
+    private static Timetable timetable = new Timetable(new TimetableDAO(), new CourseDAO());
     private static TimeCard timeCard = new TimeCard(new TimestampDAO());
-    private static AttendManager attendanceManager = new AttendManager(timeTable, timeCard);
+    private static AttendManager attendanceManager = new AttendManager(timetable, timeCard);
 
     public static void main(String[] args) {
         while (true) {
@@ -41,7 +41,7 @@ public class IntegrationTest {
                 getAvailableCourses();
                 break;
             case 5:
-                getAvailableCoursesByTimeSlot();
+                getAvailableCoursesByTimeslot();
                 break;
             case 6:
                 stamp();
@@ -63,41 +63,41 @@ public class IntegrationTest {
 
     private static void showRegisteredCourses() {
         System.out.println("Registered courses:");
-        System.out.println(timeTable);
+        System.out.println(timetable);
     }
 
     private static void addCourse() {
         System.out.print("Enter course id: ");
         int id = Integer.parseInt(System.console().readLine());
-        timeTable.addCourse(id);
+        timetable.addCourse(id);
     }
 
     private static void removeCourse() {
         System.out.print("Enter course id: ");
         int id = Integer.parseInt(System.console().readLine());
-        timeTable.removeCourse(id);
+        timetable.removeCourse(id);
     }
 
     private static void getAvailableCourses() {
-        List<Course> courses = timeTable.getAvailableCourses();
+        List<Course> courses = timetable.getAvailableCourses();
         for (Course c : courses) {
             System.out.println(c);
         }
     }
 
-    private static void getAvailableCoursesByTimeSlot() {
+    private static void getAvailableCoursesByTimeslot() {
         System.out.print("Enter course day of week: ");
         int dayOfWeek = Integer.parseInt(System.console().readLine());
         System.out.print("Enter course begin period: ");
         int beginPeriod = Integer.parseInt(System.console().readLine());
-        List<Course> courses = timeTable.getAvailableCoursesByPeriod(dayOfWeek, beginPeriod);
+        List<Course> courses = timetable.getAvailableCoursesByPeriod(dayOfWeek, beginPeriod);
         for (Course c : courses) {
             System.out.println(c);
         }
     }
 
     private static void stamp() {
-        System.out.println("Enter timestamp (yyyy-MM-dd HH:mm:ss): ");
+        System.out.print("Enter timestamp (yyyy-MM-dd HH:mm:ss): ");
         String timestampString = System.console().readLine();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime timestamp = LocalDateTime.parse(timestampString, formatter);

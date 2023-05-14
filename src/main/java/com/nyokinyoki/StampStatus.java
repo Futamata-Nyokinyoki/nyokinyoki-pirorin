@@ -6,25 +6,25 @@ import java.time.format.*;
 public class StampStatus {
     private final LocalDateTime timestamp;
     private final int status;
-    private final TimeSlot timeSlot;
+    private final Timeslot timeslot;
 
     public static final int OUT_INVALID = 0;
     public static final int IN_INVALID = 1;
     public static final int START = 2;
     public static final int END = 3;
 
-    public StampStatus(LocalDateTime timestamp, int status, TimeSlot timeSlot) {
+    public StampStatus(LocalDateTime timestamp, int status, Timeslot timeslot) {
         this.timestamp = timestamp;
         this.status = status;
-        this.timeSlot = timeSlot;
+        this.timeslot = timeslot;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public TimeSlot getTimeSlot() {
-        return timeSlot;
+    public Timeslot getTimeslot() {
+        return timeslot;
     }
 
     @Override
@@ -54,10 +54,10 @@ public class StampStatus {
         sb.append("StampStatus {");
         sb.append("timestamp=" + timestamp.format(formatter));
         sb.append(", status='" + statusDescription + "'");
-        if (timeSlot != null) {
-            sb.append(", courseId=" + timeSlot.getCourse().getId());
-            sb.append(", courseName='" + timeSlot.getCourse().getCourseName() + "'");
-            sb.append(", timeSlot=" + timeSlot);
+        if (timeslot != null) {
+            sb.append(", courseId=" + timeslot.getCourse().getId());
+            sb.append(", courseName='" + timeslot.getCourse().getCourseName() + "'");
+            sb.append(", timeslot=" + timeslot);
         }
         sb.append("}");
         return sb.toString();

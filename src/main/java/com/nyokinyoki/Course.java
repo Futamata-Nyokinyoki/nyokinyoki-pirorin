@@ -7,12 +7,12 @@ import java.util.*;
 public class Course {
     private final int id;
     private final String courseName;
-    private final List<TimeSlot> timeSlots;
+    private final List<Timeslot> timeslots;
 
-    public Course(int id, String courseName, TimeSlotDAO timeSlotDAO) {
+    public Course(int id, String courseName, TimeslotDAO timeslotDAO) {
         this.id = id;
         this.courseName = courseName;
-        this.timeSlots = timeSlotDAO.getByCourseId(id);
+        this.timeslots = timeslotDAO.getByCourseId(id);
     }
 
     public int getId() {
@@ -23,19 +23,19 @@ public class Course {
         return courseName;
     }
 
-    public List<TimeSlot> getTimeSlots() {
-        return timeSlots;
+    public List<Timeslot> getTimeslots() {
+        return timeslots;
     }
 
-    public List<TimeSlot> getTimeSlotsByDayOfWeek(DayOfWeek dayOfWeek) {
-        return timeSlots.stream().filter(timeSlot -> timeSlot.getDayOfWeek() == dayOfWeek.getValue()).toList();
+    public List<Timeslot> getTimeslotsByDayOfWeek(DayOfWeek dayOfWeek) {
+        return timeslots.stream().filter(timeslot -> timeslot.getDayOfWeek() == dayOfWeek.getValue()).toList();
     }
 
     public boolean overlapsWith(Course other) {
-        List<TimeSlot> timeSlots = this.getTimeSlots();
-        List<TimeSlot> otherTimeSlots = other.getTimeSlots();
+        List<Timeslot> timeslots = this.getTimeslots();
+        List<Timeslot> otherTimeslots = other.getTimeslots();
 
-        return timeSlots.stream().anyMatch(ts1 -> otherTimeSlots.stream().anyMatch(ts2 -> ts1.overlapsWith(ts2)));
+        return timeslots.stream().anyMatch(ts1 -> otherTimeslots.stream().anyMatch(ts2 -> ts1.overlapsWith(ts2)));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class Course {
         return "Course{" + "id=" + id + ", courseName='" + courseName + '\'' + '}';
     }
 
-    public TimeSlot getOngoingTimeSlot(LocalDateTime timestamp) {
-        return timeSlots.stream().filter(timeSlot -> timeSlot.isOngoing(timestamp)).findFirst().orElse(null);
+    public Timeslot getOngoingTimeslot(LocalDateTime timestamp) {
+        return timeslots.stream().filter(timeslot -> timeslot.isOngoing(timestamp)).findFirst().orElse(null);
     }
 }

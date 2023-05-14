@@ -15,7 +15,7 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
 
     @Override
     public List<LocalDateTime> getAll() {
-        String sql = "SELECT * FROM timestamps";
+        String sql = "SELECT * FROM timestamps ORDER BY timestamp ASC";
 
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -69,7 +69,7 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
     }
 
     public List<LocalDateTime> getByDate(LocalDate date) {
-        String sql = "SELECT * FROM timestamps WHERE strftime('%w', date(timestamp) = ?";
+        String sql = "SELECT * FROM timestamps WHERE strftime('%w', date(timestamp) = ? ORDER BY timestamp ASC";
 
         int dayOfWeek = date.getDayOfWeek().getValue() % 7;
 
@@ -94,21 +94,22 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
     public List<LocalDateTime> getByCourse(Course course) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM timestamps WHERE ");
 
-        for (int i = 0; i < course.getTimeSlots().size(); i++) {
+        for (int i = 0; i < course.getTimeslots().size(); i++) {
             if (i > 0) {
                 sqlBuilder.append(" OR ");
             }
             sqlBuilder.append("( time(timestamp) BETWEEN time(?) AND time(?))");
         }
+        sqlBuilder.append(" ORDER BY timestamp ASC");
 
         try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString())) {
             int index = 1;
-            for (TimeSlot timeSlot : course.getTimeSlots()) {
-                statement.setString(index++, timeSlot.getStartStampTimeStart().toLocalTime()
+            for (Timeslot timeslot : course.getTimeslots()) {
+                statement.setString(index++, timeslot.getStartStampTimeStart().toLocalTime()
                         .format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                 statement.setString(index++,
-                        timeSlot.getEndStampTimeEnd().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                        timeslot.getEndStampTimeEnd().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -116,8 +117,8 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
                 while (resultSet.next()) {
                     String timestamp = resultSet.getString("timestamp");
                     LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                    for (TimeSlot timeSlot : course.getTimeSlots()) {
-                        if (timeSlot.getDayOfWeek() == localDateTime.getDayOfWeek().getValue()) {
+                    for (Timeslot timeslot : course.getTimeslots()) {
+                        if (timeslot.getDayOfWeek() == localDateTime.getDayOfWeek().getValue()) {
                             timestamps.add(localDateTime);
                         }
                     }
@@ -129,15 +130,15 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
         }
     }
 
-    public List<LocalDateTime> getByDateAndTimeSlot(LocalDate date, TimeSlot timeSlot) {
-        String sql = "SELECT * FROM timestamps WHERE date(timestamp) = ? AND time(timestamp) BETWEEN time(?) AND time(?)";
+    public List<LocalDateTime> getByDateAndTimeslot(LocalDate date, Timeslot timeslot) {
+        String sql = "SELECT * FROM timestamps WHERE date(timestamp) = ? AND time(timestamp) BETWEEN time(?) AND time(?) ORDER BY timestamp ASC";
 
         List<LocalDateTime> timestamps = new ArrayList<>();
 
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, date.toString());
-            statement.setString(2, timeSlot.getStartStampTimeStart().toLocalTime().toString());
-            statement.setString(3, timeSlot.getEndStampTimeEnd().toLocalTime().toString());
+            statement.setString(2, timeslot.getStartStampTimeStart().toLocalTime().toString());
+            statement.setString(3, timeslot.getEndStampTimeEnd().toLocalTime().toString());
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -147,7 +148,7 @@ public class TimestampDAO extends AbstractDAO<LocalDateTime> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to get timestamps for date and time slot: " + date + " " + timeSlot, e);
+            throw new RuntimeException("Failed to get timestamps for date and time slot: " + date + " " + timeslot, e);
         }
         return timestamps;
     }
