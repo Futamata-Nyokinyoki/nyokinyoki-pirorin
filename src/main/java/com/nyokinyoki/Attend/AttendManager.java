@@ -1,8 +1,14 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Attend;
 
 import java.time.*;
 import java.util.*;
 import java.util.stream.*;
+
+import com.nyokinyoki.Course.Course;
+import com.nyokinyoki.Timestamp.StampStatus;
+import com.nyokinyoki.Timetable.TimeCard;
+import com.nyokinyoki.Timetable.Timeslot;
+import com.nyokinyoki.Timetable.Timetable;
 
 public class AttendManager {
     private final Timetable timetable;

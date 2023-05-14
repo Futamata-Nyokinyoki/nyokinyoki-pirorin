@@ -2,7 +2,12 @@ package com.nyokinyoki;
 
 import org.jline.reader.*;
 
+import com.nyokinyoki.Attend.AttendManager;
+import com.nyokinyoki.Course.Course;
 import com.nyokinyoki.Terminal.UtilizedTerminal;
+import com.nyokinyoki.Timestamp.StampStatus;
+import com.nyokinyoki.Timetable.TimeCard;
+import com.nyokinyoki.Timetable.Timetable;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -161,7 +166,7 @@ public class App {
     }
 
     private static void stamp(String timestampString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime timestamp = LocalDateTime.parse(timestampString, formatter);
         timeCard.stamp(timestamp);
         StampStatus status = attendanceManager.getStampStatus(timestamp);

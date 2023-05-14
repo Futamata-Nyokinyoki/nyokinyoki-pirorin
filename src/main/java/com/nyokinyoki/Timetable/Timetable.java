@@ -1,8 +1,11 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Timetable;
 
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.nyokinyoki.Course.Course;
+import com.nyokinyoki.Course.CourseDAO;
 
 public class Timetable {
     private final List<Course> courses;

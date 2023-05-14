@@ -1,6 +1,10 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Timetable;
 
 import java.util.*;
+
+import com.nyokinyoki.AbstractDAO;
+import com.nyokinyoki.Course.Course;
+
 import java.sql.*;
 import java.time.*;
 import java.time.format.*;
