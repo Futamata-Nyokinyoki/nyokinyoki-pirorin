@@ -1,6 +1,8 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Attend;
 
 import java.time.*;
+
+import com.nyokinyoki.Timetable.Timeslot;
 
 public class AttendStatus {
     private final LocalDate date;

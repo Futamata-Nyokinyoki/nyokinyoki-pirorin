@@ -1,7 +1,9 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Timestamp;
 
 import java.time.*;
 import java.time.format.*;
+
+import com.nyokinyoki.Timetable.Timeslot;
 
 public class StampStatus {
     private final LocalDateTime timestamp;

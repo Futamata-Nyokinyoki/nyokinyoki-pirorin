@@ -1,7 +1,9 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Timetable;
 
 import java.sql.*;
 import java.util.*;
+
+import com.nyokinyoki.AbstractDAO;
 
 public final class TimeslotDAO extends AbstractDAO<Timeslot> {
     private static TimeslotDAO instance = null;

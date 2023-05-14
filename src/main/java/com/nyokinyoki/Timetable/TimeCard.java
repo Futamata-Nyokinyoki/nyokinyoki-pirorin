@@ -1,6 +1,9 @@
-package com.nyokinyoki;
+package com.nyokinyoki.Timetable;
 
 import java.util.List;
+
+import com.nyokinyoki.Course.Course;
+
 import java.time.*;
 
 public class TimeCard {
