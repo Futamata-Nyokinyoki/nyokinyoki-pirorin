@@ -40,23 +40,27 @@ public class AttendStatus {
         String statusDescription;
         switch (status) {
         case ABSENT:
-            statusDescription = "Absent";
+            statusDescription = "欠席";
             break;
         case LEFT_EARLY:
-            statusDescription = "Left Early";
+            statusDescription = "早退";
             break;
         case LATE:
-            statusDescription = "Late";
+            statusDescription = "遅刻";
             break;
         case PRESENT:
-            statusDescription = "Present";
+            statusDescription = "出席";
             break;
         default:
             statusDescription = "Unknown";
         }
 
-        return "AttendStatus{" + "date=" + date + ", courseId=" + timeslot.getCourse().getId() + ", courseName='"
-                + timeslot.getCourse().getCourseName() + "', timeslot=" + timeslot + ", status='" + statusDescription
-                + "'}";
+        StringBuilder sb = new StringBuilder();
+        sb.append(date);
+        sb.append(" ").append(timeslot.getCourse().getId());
+        sb.append(" ").append(timeslot.getCourse().getCourseName());
+        sb.append(" ").append(timeslot);
+        sb.append(" ").append(statusDescription);
+        return sb.toString();
     }
 }

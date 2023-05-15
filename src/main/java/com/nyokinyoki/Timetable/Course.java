@@ -58,7 +58,12 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" + "id=" + id + ", courseName='" + courseName + '\'' + '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(id).append(" ").append(courseName);
+        for (Timeslot timeslot : timeslots) {
+            sb.append(" ").append(timeslot);
+        }
+        return sb.toString();
     }
 
     public Timeslot getOngoingTimeslot(LocalDateTime timestamp) {

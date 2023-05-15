@@ -8,9 +8,9 @@ import com.nyokinyoki.DAO.TimestampDAO;
 import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timeslot;
 
-public class TimeCard {
+public class Timecard {
 
-    public TimeCard() {
+    public Timecard() {
     }
 
     public void stamp(LocalDateTime timestamp) {

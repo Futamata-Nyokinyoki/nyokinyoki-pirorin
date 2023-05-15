@@ -71,8 +71,16 @@ public class Timeslot {
 
     @Override
     public String toString() {
-        return String.format("Timeslot {dayOfWeek=%d, beginPeriod=%d, endPeriod=%d}", dayOfWeek, beginPeriod,
-                endPeriod);
+        List<String> DAY_OF_WEEK = List.of("月曜", "火曜", "水曜", "木曜", "金曜", "土曜", "日曜");
+        StringBuilder sb = new StringBuilder();
+        sb.append(DAY_OF_WEEK.get(this.getDayOfWeek() - 1));
+        if (this.getBeginPeriod() == this.getEndPeriod()) {
+            sb.append(this.getBeginPeriod());
+        } else {
+            sb.append(this.getBeginPeriod()).append("-").append(this.getEndPeriod());
+        }
+        sb.append("コマ");
+        return sb.toString();
     }
 
     public static LocalDateTime getStartTimeForPeriod(int period) {
