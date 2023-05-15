@@ -2,7 +2,6 @@ package com.nyokinyoki.Attend;
 
 import org.junit.Test;
 
-//import com.nyokinyoki.Attend.AttendStatus;
 import com.nyokinyoki.Timetable.Timeslot;
 
 import static org.junit.Assert.assertEquals;
