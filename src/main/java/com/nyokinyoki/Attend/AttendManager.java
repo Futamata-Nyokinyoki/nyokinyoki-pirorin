@@ -9,16 +9,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.nyokinyoki.Timestamp.StampStatus;
-import com.nyokinyoki.Timestamp.TimeCard;
+import com.nyokinyoki.Timestamp.Timecard;
 import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timeslot;
 import com.nyokinyoki.Timetable.Timetable;
 
 public class AttendManager {
     private final Timetable timetable;
-    private final TimeCard timeCard;
+    private final Timecard timeCard;
 
-    public AttendManager(Timetable timetable, TimeCard timeCard) {
+    public AttendManager(Timetable timetable, Timecard timeCard) {
         this.timetable = timetable;
         this.timeCard = timeCard;
     }

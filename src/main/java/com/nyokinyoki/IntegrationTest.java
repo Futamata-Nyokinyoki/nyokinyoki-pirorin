@@ -9,14 +9,14 @@ import com.nyokinyoki.Attend.AttendManager;
 import com.nyokinyoki.Attend.AttendStatus;
 import com.nyokinyoki.DAO.CourseDAO;
 import com.nyokinyoki.Timestamp.StampStatus;
-import com.nyokinyoki.Timestamp.TimeCard;
+import com.nyokinyoki.Timestamp.Timecard;
 import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timetable;;
 
 public class IntegrationTest {
 
     private static Timetable timetable = new Timetable();
-    private static TimeCard timeCard = new TimeCard();
+    private static Timecard timeCard = new Timecard();
     private static AttendManager attendanceManager = new AttendManager(timetable, timeCard);
 
     public static void main(String[] args) {

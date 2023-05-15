@@ -16,13 +16,13 @@ import com.nyokinyoki.Attend.AttendStatus;
 import com.nyokinyoki.DAO.CourseDAO;
 import com.nyokinyoki.Terminal.UtilizedTerminal;
 import com.nyokinyoki.Timestamp.StampStatus;
-import com.nyokinyoki.Timestamp.TimeCard;
+import com.nyokinyoki.Timestamp.Timecard;
 import com.nyokinyoki.Timetable.Course;
 import com.nyokinyoki.Timetable.Timetable;
 
 public class App {
     static Timetable timeTable = new Timetable();
-    static TimeCard timeCard = new TimeCard();
+    static Timecard timeCard = new Timecard();
     static AttendManager attendanceManager = new AttendManager(timeTable, timeCard);
 
     public static void main(String[] args) {

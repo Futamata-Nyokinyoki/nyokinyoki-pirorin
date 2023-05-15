@@ -34,16 +34,16 @@ public class StampStatus {
         String statusDescription;
         switch (status) {
         case OUT_INVALID:
-            statusDescription = "OUT_INVALID";
+            statusDescription = "通常打刻";
             break;
         case IN_INVALID:
-            statusDescription = "IN_INVALID";
+            statusDescription = "授業打刻";
             break;
         case START:
-            statusDescription = "START";
+            statusDescription = "授業開始打刻";
             break;
         case END:
-            statusDescription = "END";
+            statusDescription = "授業終了打刻";
             break;
         default:
             statusDescription = "UNKNOWN";
@@ -53,15 +53,13 @@ public class StampStatus {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         StringBuilder sb = new StringBuilder();
-        sb.append("StampStatus {");
-        sb.append("timestamp=" + timestamp.format(formatter));
-        sb.append(", status='" + statusDescription + "'");
+        sb.append(timestamp.format(formatter));
+        sb.append(" ").append(statusDescription);
         if (timeslot != null) {
-            sb.append(", courseId=" + timeslot.getCourse().getId());
-            sb.append(", courseName='" + timeslot.getCourse().getCourseName() + "'");
-            sb.append(", timeslot=" + timeslot);
+            sb.append(" ").append(timeslot.getCourse().getId());
+            sb.append(" ").append(timeslot.getCourse().getCourseName());
+            sb.append(" ").append(timeslot);
         }
-        sb.append("}");
         return sb.toString();
     }
 }
